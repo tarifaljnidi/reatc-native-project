@@ -1,5 +1,5 @@
 import React,{PureComponent,useState} from 'react';
-import { Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
+import { Linking ,Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -103,24 +103,22 @@ if(params!=null) {
 }
 
 
-     let view = this.state.isLoading ? (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator animating={this.state.isLoading} color="#00f0ff" />
-        <Text style={{ marginTop: 8 }} children="" />
-    </View>
-) : (
+     let view =(
         <List
         style={{width: '100%'}}
             dataArray={this.state.data}
             keyExtractor={(item,index) => index.toString()}
  renderItem = {({item, index}) => {
           let t=item.body;
+          let result=t.slice(44, 300);
           let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
-if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+        if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
         {  var imageurlMedium = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;}
         if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
-                {      var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
-
+        {  var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
+         const time=  item.pubDate;
+          const category= item.mainDestinationName;
+          let commentscount=item.comments.count;
 // const Imagecompone =imageurlSmall?(<Thumbnail style={{ backgroundColor: '#eee', alignSelf: 'center' }} square large  source={{ cache:'force-cache', uri:imageurlSmall!= null ? "http://image-api.suckup.de/image-api.php?file="+imageurlSmall+"&quality=25" : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII='}}/>):null;
 //           for (let key in item['object_definitions']) {
 //           if((item['object_definitions'][key]['crop_definitions'])){
@@ -146,7 +144,7 @@ if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
              //   // })
              // });
 
-       let result=t.slice(44, 300);
+
         if(index%4==0)    return (
                       <ListItem style={{marginLeft: 0,marginRight: 0,backgroundColor: index%3==0 ? 'black' : 'white'}}>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 0,justifyContent :'center',alignItems: 'center',flexDirection:'row'}} activeOpacity={0.5}>
@@ -155,12 +153,12 @@ if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
                       <Text  numberOfLines={3} style={{fontFamily:'Pacifico',fontSize: 20 ,color: index%3==0 ? 'white' : 'black'}} numberOfLines={2}>{item.title}</Text>
                       <Text note numberOfLines={3} style={{fontSize: 16 ,marginRight: 0}}>{result}</Text>
                       <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
-                        <Time date={item.pubDate} />
-                          <Text note>|  {item.mainDestinationName}</Text>
+                        <Time date={time} />
+                          <Text note>|  {category}</Text>
                   <View style={{ flex: 1, flexDirection: 'row', marginTop: 0, marginLeft: 0 ,marginRight: 2 ,justifyContent :'flex-end',alignItems: 'center'}}>
                    <Icon style={{ marginLeft: 10 }} name="bookmark" size={14} color={index%3==0 ? 'white' : 'black'}  />
                       <Icon style={{ marginLeft: 17 }} name="comment" size={14} color={index%3==0 ? 'white' : 'black'}  />
-                         <Text style={{fontSize: 12,color:"white",marginLeft: 5 }}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
+                         <Text style={{fontSize: 12,color:"white",marginLeft: 5 }}>{commentscount=commentscount>0?item.comments.count:null}</Text>
                 <Icon style={{ marginLeft: 0 }} name="share-alt" size={14} color={index%3==0 ? 'white' : 'black'}  />
                       </View>
                         </View>
@@ -349,16 +347,41 @@ return (
 
 
 class FeedDetail extends React.Component {
+  constructor(props) {
+        super(props);
+          this.state = {
+      supported : true,
+   }
+ }
+  onCancel() {
+      console.log("CANCEL")
+      // this.setState({visible:false});
+  }
 
   render() {
 
 const { params } = this.props.navigation.state;
 const imageurl = params ? params['object_definitions'][params['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
 const urlshare = params ? params['object_relations'][1].uri : null;
+// const urlshareencoded = encodeURIComponent(JSON.stringify(urlshare));
 const links=params ? params['object_definitions'][params['object_relations'][1]['uri']]['links']: null;
 const commentscount= parseInt(params.comments.count);
 // console.log(commentscount);
-console.log(urlshare);
+  // console.log(urlshare);
+  let shareOptions = {
+            message: params.title + '\n' + urlshare,
+          };
+
+    const onSharefacebook = async () => {
+        try {
+          const result = await Share.shareSingle(Object.assign(shareOptions, {
+             "social": "twitter"
+           }));
+        } catch (error) {
+          alert(error.message);
+        }
+      };
+
 const onShare = async () => {
     try {
       const result = await Share.share({
@@ -378,6 +401,41 @@ const onShare = async () => {
       alert(error.message);
     }
   };
+
+  //cancel method
+  // const onCancel =  () => {
+  //     console.log("CANCEL");
+  // }
+
+  const openFacebookLink = facebookId => {
+    const FANPAGE_URL_FOR_APP = `fb://page/159616034235`;
+    const FANPAGE_URL_FOR_BROWSER = `https://fb.com/sharer/sharer.php?u=${facebookId}`;
+
+    Linking.canOpenURL(FANPAGE_URL_FOR_APP)
+      .then(appSupported => {
+        if (appSupported) {
+          console.log(`Can handle native url: ${FANPAGE_URL_FOR_APP}`);
+          return Linking.openURL(FANPAGE_URL_FOR_APP);
+        } else {
+          console.log(
+            `Can't handle native url ${FANPAGE_URL_FOR_APP} defaulting to web URL ${FANPAGE_URL_FOR_BROWSER}`
+          );
+          return Linking.canOpenURL(FANPAGE_URL_FOR_BROWSER).then(
+            webSupported => {
+              if (webSupported) {
+                console.log(`Can handle web url: ${FANPAGE_URL_FOR_BROWSER}`);
+                return Linking.openURL(FANPAGE_URL_FOR_BROWSER);
+              }
+              return null;
+            }
+          );
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
+
+
+
 
 const page = commentscount > 0 ? "Comments" : "AddComments";
     // <HTML html={body}    />
@@ -416,12 +474,13 @@ var htmlContent =params ? params.body: null;
       imagesMaxWidth={Dimensions.get('window').width-30}
       tagsStyles={{
           p: {
+            marginBottom:20,
     fontSize:Dimensions.get('window').width*0.05,
       // textAlign: 'left',
       // flexWrap: 'wrap',
 // width: '6.5%'
 },
-blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
+blockquote: {fontSize:Dimensions.get('window').width*0.05,},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
 
 }}
  classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
@@ -454,10 +513,32 @@ blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensio
                <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{params.comments.count}</Text>
           </View>
         <Button transparent>
-          <Icon name='facebook-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
+          <Icon name='facebook-square'
+          // onPress={()=>{
+          //
+          //          setTimeout(() => {
+          //           Share.shareSingle(Object.assign(shareOptions, {
+          //              "social": "facebook"
+          //            }));
+          //          },300);}}
+       onPress={() =>  openFacebookLink(urlshare)}
+                   size={20} color='#939497'/>
         </Button>
         <Button transparent>
-          <Icon name='twitter-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
+          <Icon name='twitter-square'
+          // onPress={onSharefacebook}
+
+          onPress={() => {
+  let url = `fb://faceweb/f?href=https%3A%2F%2Fm.facebook.com%2Fsharer.php%3Fu%3Dhttp%3A%2F%2Fwww.${urlshare.slice(12)}`;
+                // let url = 'fb://share?link=${urlshare}';
+                Linking.openURL(url).then((data) => {
+                  console.log('open whatsapp')
+                }).catch(() => {
+                  console.log('App not installed')
+                });
+              }}
+
+            size={20} color='#939497'/>
         </Button>
         <Button transparent>
           <Icon name='share-alt' onPress={onShare} size={20} color='#939497'/>
@@ -473,229 +554,229 @@ blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensio
 //
 //
 //
-class ArticleLink extends React.Component {
-  constructor(props) {
-       super(props);
-         this.state = {
-      isLoading: true,
-      data: null,
-      isError: false,
-  }
-}
-
-  render() {
-const { params } = this.props.navigation.state;
-
-if(params!=null) {
-   getArticleLinks(params.nid).then(data => {
-      this.setState({
-          isLoading: false,
-    data: data
-      })
-  }, error => {
-      Alert.alert("Error", "Something happend, please try again")
-  }
-)
-}
-// const imageurl = this.state.data ? this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
-const links=this.state.data? this.state.data['object_definitions'][this.state.data['object_relations'][1]['uri']]['links']: null;
-const title= this.state.data? this.state.data.title:null;
-// const  mainDestinationName= this.state.data? this.state.data.mainDestinationName:null;
-const author= this.state.data?this.state.data.authors[0].name:null;
-var pubDate=this.state.data?(new Date(parseInt(this.state.data.pubDate+'000')).toISOString()):null;
-let date1 = new Date(pubDate);
- const time = moment(date1).format('DD[/]MM[/]YYYY  HH:mm');
-const imageurl= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_small'].url: null;
-const captionimage= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['caption']: null;
-const body=this.state.data? this.state.data.body: null;
- const commentscount= this.state.data? parseInt(this.state.data.comments.count): null;
- const page = commentscount > 0 ? "Comments" : "AddComments";
-
-// console.log(links);
-// console.log(pubDate);
-
-//  let  dateobj = new Date(parseInt(pubDate)).toISOString();
-//  let date1 = new Date(dateobj);
-// const time = (moment(date1).format("MMM Do YY")==moment().format("MMM Do YY"))?moment(date1).format('h:mm'): moment(date1).format('MM[/]DD');
-
- return (
-
-      <View style={{ flex: 1 }}>
-          <ScrollView>
-        <CustomHeader   />
-      <View style={{ marginLeft: 15,flex: 1,fontFamily:'Tageblatt Picto', flexDirection: 'column',  justifyContent: 'center',alignItems: 'flex-start' }}>
-        <Text style={{ flex: 1,fontSize: 24,marginTop: 15 }}>{title}</Text>
-        <View style={{ flex: 1, flexDirection: 'row',alignItems: 'center', marginBottom:5}}>
-          <Text style={{ fontSize: 16}}>{author}  |  </Text>
-              <Text style={{ fontSize: 16}}>{time}</Text>
-        </View>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
-        <Image
-         style={{
-           flex: 1,
-         width:Dimensions.get('window').width-30,height: 288
-         }}
-         source={{uri:imageurl}}
-         />
-         <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{captionimage}</Text>
-     </View>
-      <View style={{   flex:8,
-    width:Dimensions.get('window').width-30}}>
-      <HTML html={body}
-      imagesMaxWidth={Dimensions.get('window').width-30}
-      tagsStyles={{
-          p: {
-    fontSize:Dimensions.get('window').width*0.05,
-      // textAlign: 'left',
-      // flexWrap: 'wrap',
-// width: '6.5%'
-},
-blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
-
-}}
- classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
-      />
-      </View>
-            <Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>
-          <List  style={{marginBottom:50}}
-              dataArray={links}
-          renderItem={({item})=>{
-              return (
-                        <ListItem style={{marginLeft: 0}} noBorder>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleLink',item)} style={{flexDirection:'row'}} activeOpacity={0.5}>
-                        <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{item.title}</Text>
-                            </TouchableOpacity>
-                      </ListItem>
-                    )
-              }} />
-                <View style = {styles.button_style}>
-              <Button danger >
-        <Text>KOMMENTARE</Text>
-            </Button>
-              </View>
-        </View>
-              </ScrollView>
-              <View  navigation={this.props.navigation}  style={{ marginTop:5,paddingHorizontal:20,backgroundColor: '#c4c6ca',justifyContent: 'space-around', alignItems: 'flex-start',flexDirection:'row',height:50 }}>
-                <View  style={{  flexDirection: 'row',alignItems: 'center'}}>
-                    <Button transparent>
-                       <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,this.state.data)}  size={20} color='#939497'/>
-                    </Button>
-                     <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{commentscount}</Text>
-                </View>
-              <Button transparent>
-                <Icon name='facebook-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-              </Button>
-              <Button transparent>
-                <Icon name='twitter-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-              </Button>
-              <Button transparent>
-                <Icon name='share-alt' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-              </Button>
-              </View>
-                </View>
-
- );
-
-  }
-}
-
-
-
-class Comments extends React.Component {
- constructor(props) {
-      super(props);
-  }
- render() {
-   const { params } = this.props.navigation.state;
-   return (
-     <View  style={{ flex: 1 }}>
-    <CustomHeader  title='Kommentare'  navigation={this.props.navigation} />
-     <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 24,marginTop: 15, marginLeft: 13 }}>{params.title}</Text>
-        <List
-            dataArray={params.comments.list}
-        renderItem={({item})=>{
-            return (
-                <ScrollView>
-                      <ListItem style={{ flexDirection: 'column'}}>
-                      <View style={{ flexDirection: 'row', marginBottom:5}}>
-                        <Text   style={{fontSize: 8 }} >{item.comment_author_name}</Text>
-                        <Text   style={{fontSize: 8 }} >{item.comment_date.slice(0,16)}</Text>
-                      </View>
-                      <View>
-                      <Text  style={{fontSize: 12 }} >{item.comment_content}</Text>
-                      </View>
-                    </ListItem>
-                      </ScrollView>
-                  )
-            }} />
-     </View>
-     <View style={{ backgroundColor: 'white',justifyContent: 'center', alignItems: 'center',height:50 }}>
-         <Button style={{ backgroundColor: 'red',padding:20}} onPress={() => this.props.navigation.navigate('AddComments',params)}>
-         <Text style={{ color: 'white'}}>SCHREIBEN SIE EINEN KOMMENTAR</Text>
-         </Button>
-     </View>
-       </View>
-       );
- }
-}
-
-class AddComments extends React.Component {
- constructor(props) {
-      super(props);
-      this.state = {
-         name: '',
-     email: ''
-  }
-  }
-  handleEmail = (text) => {
-     this.setState({ email: text })
-  }
-  handleName = (text) => {
-     this.setState({ name: text })
-  }
- render() {
-const { params } = this.props.navigation.state;
-// console.log(this.state.email);
-   return (
-     <View  style={{ flex: 1 }}>
-     <Header style={{ backgroundColor: 'black' }} navigation={this.props.navigation}>
-       <Left>
-         <Button transparent>
-           <Icon name='arrow-left' size={25} color="white" onPress={() => this.props.navigation.goBack()}/>
-         </Button>
-         </Left>
-       <Body>
-         <Title style={{ fontSize: 16 }}>SCHREIBEN SIE EINEN KOMMENTAR</Title>
-       </Body>
-     </Header>
-     <View style={{ flex:1,justifyContent: 'center', alignItems: 'center' }}>
-     <Button style={{marginTop: 5, marginLeft:10,backgroundColor: 'red',padding:15}} onPress={() => this.props.navigation.navigate('Comments',params)}>
-     <Text style={{ color: 'white'}}>ABSENDEN</Text>
-     </Button>
-     <TextInput style = {styles.input}
-             underlineColorAndroid = "transparent"
-             placeholder = "Name"
-             placeholderTextColor = "#C8C8C8"
-             autoCapitalize = "none"
-             onChangeText = {this.handleName}/>
-     <TextInput style = {styles.input}
-             underlineColorAndroid = "transparent"
-             placeholder = "E-mail"
-             placeholderTextColor = "#C8C8C8"
-             autoCapitalize = "none"
-             onChangeText = {this.handleEmail}/>
-          <Text style={{ color: 'black',  margin: 10}}>Kommentar:</Text>
-          <TextInput style = {styles.textarea}
-                  underlineColorAndroid = "transparent"
-                  autoCapitalize = "none"
-                   numberOfLines={10}
-                  onChangeText = {this.handleEmail}/>
-     </View>
-     </View>
-       );
- }
-}
+// class ArticleLink extends React.Component {
+//   constructor(props) {
+//        super(props);
+//          this.state = {
+//       isLoading: true,
+//       data: null,
+//       isError: false,
+//   }
+// }
+//
+//   render() {
+// const { params } = this.props.navigation.state;
+//
+// if(params!=null) {
+//    getArticleLinks(params.nid).then(data => {
+//       this.setState({
+//           isLoading: false,
+//     data: data
+//       })
+//   }, error => {
+//       Alert.alert("Error", "Something happend, please try again")
+//   }
+// )
+// }
+// // const imageurl = this.state.data ? this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
+// const links=this.state.data? this.state.data['object_definitions'][this.state.data['object_relations'][1]['uri']]['links']: null;
+// const title= this.state.data? this.state.data.title:null;
+// // const  mainDestinationName= this.state.data? this.state.data.mainDestinationName:null;
+// const author= this.state.data?this.state.data.authors[0].name:null;
+// var pubDate=this.state.data?(new Date(parseInt(this.state.data.pubDate+'000')).toISOString()):null;
+// let date1 = new Date(pubDate);
+//  const time = moment(date1).format('DD[/]MM[/]YYYY  HH:mm');
+// const imageurl= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_small'].url: null;
+// const captionimage= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['caption']: null;
+// const body=this.state.data? this.state.data.body: null;
+//  const commentscount= this.state.data? parseInt(this.state.data.comments.count): null;
+//  const page = commentscount > 0 ? "Comments" : "AddComments";
+//
+// // console.log(links);
+// // console.log(pubDate);
+//
+// //  let  dateobj = new Date(parseInt(pubDate)).toISOString();
+// //  let date1 = new Date(dateobj);
+// // const time = (moment(date1).format("MMM Do YY")==moment().format("MMM Do YY"))?moment(date1).format('h:mm'): moment(date1).format('MM[/]DD');
+//
+//  return (
+//
+//       <View style={{ flex: 1 }}>
+//           <ScrollView>
+//         <CustomHeader   />
+//       <View style={{ marginLeft: 15,flex: 1,fontFamily:'Tageblatt Picto', flexDirection: 'column',  justifyContent: 'center',alignItems: 'flex-start' }}>
+//         <Text style={{ flex: 1,fontSize: 24,marginTop: 15 }}>{title}</Text>
+//         <View style={{ flex: 1, flexDirection: 'row',alignItems: 'center', marginBottom:5}}>
+//           <Text style={{ fontSize: 16}}>{author}  |  </Text>
+//               <Text style={{ fontSize: 16}}>{time}</Text>
+//         </View>
+//         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
+//         <Image
+//          style={{
+//            flex: 1,
+//          width:Dimensions.get('window').width-30,height: 288
+//          }}
+//          source={{uri:imageurl}}
+//          />
+//          <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{captionimage}</Text>
+//      </View>
+//       <View style={{   flex:8,
+//     width:Dimensions.get('window').width-30}}>
+//       <HTML html={body}
+//       imagesMaxWidth={Dimensions.get('window').width-30}
+//       tagsStyles={{
+//           p: {
+//     fontSize:Dimensions.get('window').width*0.05,
+//       // textAlign: 'left',
+//       // flexWrap: 'wrap',
+// // width: '6.5%'
+// },
+// blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
+//
+// }}
+//  classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
+//       />
+//       </View>
+//             <Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>
+//           <List  style={{marginBottom:50}}
+//               dataArray={links}
+//           renderItem={({item})=>{
+//               return (
+//                         <ListItem style={{marginLeft: 0}} noBorder>
+//                         <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleLink',item)} style={{flexDirection:'row'}} activeOpacity={0.5}>
+//                         <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{item.title}</Text>
+//                             </TouchableOpacity>
+//                       </ListItem>
+//                     )
+//               }} />
+//                 <View style = {styles.button_style}>
+//               <Button danger >
+//         <Text>KOMMENTARE</Text>
+//             </Button>
+//               </View>
+//         </View>
+//               </ScrollView>
+//               <View  navigation={this.props.navigation}  style={{ marginTop:5,paddingHorizontal:20,backgroundColor: '#c4c6ca',justifyContent: 'space-around', alignItems: 'flex-start',flexDirection:'row',height:50 }}>
+//                 <View  style={{  flexDirection: 'row',alignItems: 'center'}}>
+//                     <Button transparent>
+//                        <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,this.state.data)}  size={20} color='#939497'/>
+//                     </Button>
+//                      <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{commentscount}</Text>
+//                 </View>
+//               <Button transparent>
+//                 <Icon name='facebook-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
+//               </Button>
+//               <Button transparent>
+//                 <Icon name='twitter-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
+//               </Button>
+//               <Button transparent>
+//                 <Icon name='share-alt' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
+//               </Button>
+//               </View>
+//                 </View>
+//
+//  );
+//
+//   }
+// }
+//
+//
+//
+// class Comments extends React.Component {
+//  constructor(props) {
+//       super(props);
+//   }
+//  render() {
+//    const { params } = this.props.navigation.state;
+//    return (
+//      <View  style={{ flex: 1 }}>
+//     <CustomHeader  title='Kommentare'  navigation={this.props.navigation} />
+//      <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center' }}>
+//         <Text style={{ fontSize: 24,marginTop: 15, marginLeft: 13 }}>{params.title}</Text>
+//         <List
+//             dataArray={params.comments.list}
+//         renderItem={({item})=>{
+//             return (
+//                 <ScrollView>
+//                       <ListItem style={{ flexDirection: 'column'}}>
+//                       <View style={{ flexDirection: 'row', marginBottom:5}}>
+//                         <Text   style={{fontSize: 8 }} >{item.comment_author_name}</Text>
+//                         <Text   style={{fontSize: 8 }} >{item.comment_date.slice(0,16)}</Text>
+//                       </View>
+//                       <View>
+//                       <Text  style={{fontSize: 12 }} >{item.comment_content}</Text>
+//                       </View>
+//                     </ListItem>
+//                       </ScrollView>
+//                   )
+//             }} />
+//      </View>
+//      <View style={{ backgroundColor: 'white',justifyContent: 'center', alignItems: 'center',height:50 }}>
+//          <Button style={{ backgroundColor: 'red',padding:20}} onPress={() => this.props.navigation.navigate('AddComments',params)}>
+//          <Text style={{ color: 'white'}}>SCHREIBEN SIE EINEN KOMMENTAR</Text>
+//          </Button>
+//      </View>
+//        </View>
+//        );
+//  }
+// }
+//
+// class AddComments extends React.Component {
+//  constructor(props) {
+//       super(props);
+//       this.state = {
+//          name: '',
+//      email: ''
+//   }
+//   }
+//   handleEmail = (text) => {
+//      this.setState({ email: text })
+//   }
+//   handleName = (text) => {
+//      this.setState({ name: text })
+//   }
+//  render() {
+// const { params } = this.props.navigation.state;
+// // console.log(this.state.email);
+//    return (
+//      <View  style={{ flex: 1 }}>
+//      <Header style={{ backgroundColor: 'black' }} navigation={this.props.navigation}>
+//        <Left>
+//          <Button transparent>
+//            <Icon name='arrow-left' size={25} color="white" onPress={() => this.props.navigation.goBack()}/>
+//          </Button>
+//          </Left>
+//        <Body>
+//          <Title style={{ fontSize: 16 }}>SCHREIBEN SIE EINEN KOMMENTAR</Title>
+//        </Body>
+//      </Header>
+//      <View style={{ flex:1,justifyContent: 'center', alignItems: 'center' }}>
+//      <Button style={{marginTop: 5, marginLeft:10,backgroundColor: 'red',padding:15}} onPress={() => this.props.navigation.navigate('Comments',params)}>
+//      <Text style={{ color: 'white'}}>ABSENDEN</Text>
+//      </Button>
+//      <TextInput style = {styles.input}
+//              underlineColorAndroid = "transparent"
+//              placeholder = "Name"
+//              placeholderTextColor = "#C8C8C8"
+//              autoCapitalize = "none"
+//              onChangeText = {this.handleName}/>
+//      <TextInput style = {styles.input}
+//              underlineColorAndroid = "transparent"
+//              placeholder = "E-mail"
+//              placeholderTextColor = "#C8C8C8"
+//              autoCapitalize = "none"
+//              onChangeText = {this.handleEmail}/>
+//           <Text style={{ color: 'black',  margin: 10}}>Kommentar:</Text>
+//           <TextInput style = {styles.textarea}
+//                   underlineColorAndroid = "transparent"
+//                   autoCapitalize = "none"
+//                    numberOfLines={10}
+//                   onChangeText = {this.handleEmail}/>
+//      </View>
+//      </View>
+//        );
+//  }
+// }
 
 class SideMenu extends React.Component {
   constructor(props) {
@@ -854,18 +935,18 @@ const FeedStack = createStackNavigator({
     screen: FeedDetail,
     navigationOptions:navOptionHandler
   },
-  Comments: {
-    screen: Comments,
-    navigationOptions:navOptionHandler
-  },
-  AddComments: {
-    screen: AddComments,
-    navigationOptions:navOptionHandler
-  },
-  ArticleLink: {
-    screen: ArticleLink,
-    navigationOptions:navOptionHandler
-  },
+  // Comments: {
+  //   screen: Comments,
+  //   navigationOptions:navOptionHandler
+  // },
+  // AddComments: {
+  //   screen: AddComments,
+  //   navigationOptions:navOptionHandler
+  // },
+  // ArticleLink: {
+  //   screen: ArticleLink,
+  //   navigationOptions:navOptionHandler
+  // },
 });
 
 const MyDrawerNavigator = createDrawerNavigator(
