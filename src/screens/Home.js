@@ -1,5 +1,5 @@
 import React,{PureComponent,useState} from 'react';
-import { Linking ,Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
+import {AsyncStorage, Linking ,Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createAppContainer } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -14,6 +14,7 @@ import { getArticles,getArticleLinks , getMenusideGategory} from '../services/ne
 import  Time  from '../components/time';
 import  Time1  from '../components/time1';
 import moment from 'moment';
+import axios from 'axios';
 // import  HTMLView  from 'react-native-htmlview';
 // import InfiniteScroll from 'react-native-infinite-looping-scroll';
  // import HTMLText from "react-htmltext";
@@ -57,18 +58,110 @@ import moment from 'moment';
 class Feed extends PureComponent {
   constructor(props) {
        super(props);
+        this.retrieveData();
+         // this.removeEverything();
        this.state = {
            isLoading: true,
            data: null,
            dataimage: null,
            isError: false,
-            url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage"
+            url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage",
+            token:"",
+            obj:{
+              name:'tarif',
+              password:'123456'
+            }
+
        }
    }
+   removeEverything = async () => {
+     try {
+       await AsyncStorage.clear()
+       alert('Storage successfully cleared!')
+     } catch (e) {
+       alert('Failed to clear the async storage.')
+     }
+   }
+   save = async name => {
+       try {
+          this.setState({ token:'abc123' })
+         await AsyncStorage.setItem('token', 'abc123' )
+         await AsyncStorage.setItem('obj', JSON.stringify( {obj:this.state.data}))
+         console.log(this.state.token)
+         console.log(this.state.data)
+
+       } catch (e) {
+         alert('Failed to save name.')
+       }
+     }
+
+     retrieveData = async () => {
+    try {
+      const name = await AsyncStorage.getItem('token')
+      const obj = await AsyncStorage.getItem('obj')
+      const obj1 = JSON.parse(obj)
+      if (name !== null) {
+        this.setState({ token:name })
+      }
+      if (obj1 !== null) {
+        this.setState({ data:obj1 })
+      }
+    } catch (e) {
+      alert('Failed to load name.')
+    }
+  }
 
 
+
+   // async componentDidMount() {
+   //     const photoStorage = await AsyncStorage.getItem('GalleryPhotos')
+   //     console.log(photoStorage);
+   //     if(photoStorage==null) {
+   //       try {
+   //         const photoResp = getArticles(this.state.url).then(data => {
+   //               this.setState({
+   //                   isLoading: false,
+   //             data: data.packages
+   //
+   //               })
+   //           }, error => {
+   //               Alert.alert("Error", "Something happend, please try again")
+   //           })
+   //         const photoData = await JSON.stringify(photoResp.packages)
+   //         await AsyncStorage.setItem('GalleryPhotos', photoData);
+   //       } catch(e) {
+   //         console.warn("fetch Error: ", error)
+   //      }
+   //        }
+   //      else {
+   //    console.log("Data was not fetched!");
+   //        getArticles(this.state.url).then(data => {
+   //            this.setState({
+   //                isLoading: false,
+   //          data: data.packages
+   //
+   //            })
+   //        }, error => {
+   //            Alert.alert("Error", "Something happend, please try again")
+   //        })
+   //
+   //    }
+   //  }
+   //
+   //
+   // getPhotos = async()=> {
+   //   try {
+   //       data = JSON.parse(await AsyncStorage.getItem('GalleryPhotos'));
+   //   }
+   //   catch (error) {
+   //     console.error(error);
+   //   }
+   // }
+   //
    componentDidMount() {
      // let url="https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage";
+
+     if(this.state.data==null){
        getArticles(this.state.url).then(data => {
            this.setState({
                isLoading: false,
@@ -78,10 +171,14 @@ class Feed extends PureComponent {
        }, error => {
            Alert.alert("Error", "Something happend, please try again")
        })
+     }
+     else{
+ this.retrieveData()
+
+     }
    }
 
   render() {
-
 
     console.disableYellowBox = true;
     const { params } =  this.props.navigation.state;
@@ -110,7 +207,7 @@ if(params!=null) {
             keyExtractor={(item,index) => index.toString()}
  renderItem = {({item, index}) => {
           let t=item.body;
-          let result=t.slice(44, 300);
+          let body=t.slice(44, 300);
           let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
         if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
         {  var imageurlMedium = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;}
@@ -151,7 +248,7 @@ if(params!=null) {
                   <Body style={{ width:Dimensions.get('window').width}}>
                   <Thumbnail style={{ marginLeft:13,marginRight:0,width:null, height: 180, backgroundColor: '#eee'  }} square large  source={{ cache:'force-cache', uri:imageurlMedium!= null ? imageurlMedium : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII=' }} />
                       <Text  numberOfLines={3} style={{fontFamily:'Pacifico',fontSize: 20 ,color: index%3==0 ? 'white' : 'black'}} numberOfLines={2}>{item.title}</Text>
-                      <Text note numberOfLines={3} style={{fontSize: 16 ,marginRight: 0}}>{result}</Text>
+                      <Text note numberOfLines={3} style={{fontSize: 16 ,marginRight: 0}}>{body}</Text>
                       <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
                         <Time date={time} />
                           <Text note>|  {category}</Text>
@@ -172,7 +269,7 @@ if(params!=null) {
                      <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 0,justifyContent :'center',alignItems: 'center',flexDirection:'row',backgroundColor: index%3==0 ? 'black' : 'white'}} activeOpacity={0.5}>
                  <Body>
                      <Text  numberOfLines={3} style={{fontSize: 16,color: index%3==0 ? 'white' : 'black' }} numberOfLines={2}>{item.title}</Text>
-                     <Text note numberOfLines={2}>{result}</Text>
+                     <Text note numberOfLines={2}>{body}</Text>
                      <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
                        <Time date={item.pubDate} />
                          <Text note>|  {item.mainDestinationName}</Text>

@@ -8,7 +8,7 @@ export async function getArticles(url){
         let articles = await fetch(url,{
             headers:{  }
         });
-      let result = await articles.json();
+     let result = await articles.json();
         // let result ={
         //            "title": "Homepage",
         //            "link": "https://www.tageblatt.lu/",
@@ -302,6 +302,30 @@ export async function getArticles(url){
         //                }
         //                ]
         //        }
+
+//    const lapsList = result.packages.map((item) => {
+//    let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
+//    if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+//      {  var imageurlMedium = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;}
+//    if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+//    {  var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
+// const dataArray =
+// { "title": item.title,
+// "body":item.body.slice(44, 300),
+// "pubDate":item.pubDate,
+// "mainDestinationName":item.mainDestinationName,
+// "comments":item.comments.count,
+// "imageurlMedium":imageurlMedium,
+// "imageurlSmall":imageurlSmall
+// }
+// ;
+// return (
+//  dataArray
+// )
+// });
+// console.log(lapsList);
+
+
         return result;
     } catch (error) {
         throw error
