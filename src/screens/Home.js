@@ -1,8 +1,8 @@
 import React,{PureComponent,useState} from 'react';
-import { Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
+import {AsyncStorage, Linking ,Share, View ,Image,ActivityIndicator, Alert ,StyleSheet, TouchableOpacity,Dimensions,ScrollView,SafeAreaView, TextInput ,FlatList} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+// import { createBottomTabNavigator } from 'react-navigation-tabs';
 import {Container, Header, Left, Body, Right, Button, Title,Text,Content, List, ListItem,Thumbnail} from 'native-base';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -10,10 +10,15 @@ import { IMAGE } from '../constants/image';
 // import { Fonts } from './src/constants/fonts';
 import { getArticles,getArticleLinks , getMenusideGategory} from '../services/news';
  import HTML from 'react-native-render-html';
-// import  WebView from 'react-native-webview';
 import  Time  from '../components/time';
 import  Time1  from '../components/time1';
 import moment from 'moment';
+import  FeedDetail  from './FeedDetail';
+import  ArticleLink  from './ArticleLink';
+import  Comments  from './Comments';
+import  AddComments  from './AddComments';
+
+// import axios from 'axios';
 // import  HTMLView  from 'react-native-htmlview';
 // import InfiniteScroll from 'react-native-infinite-looping-scroll';
  // import HTMLText from "react-htmltext";
@@ -29,7 +34,8 @@ import moment from 'moment';
 
  class CustomHeader extends React.Component {
   render() {
-    let {title,isHome,icon}=this.props
+  let {title,isHome}=this.props
+    // let isHome=this.props
     return (
         <Header style={{ backgroundColor: 'black' }}>
           <Left>
@@ -43,10 +49,9 @@ import moment from 'moment';
           }
             </Left>
           <Body>
-           <Image  style={{ marginTop: 20,backgroundColor: 'white' }} source={IMAGE.ICON_MENU2} style={{ height:35,width:125 }}/>
-          </Body>
+            <Image  style={{ marginTop: 20,backgroundColor: 'white' }} source={IMAGE.ICON_MENU2} style={{ height:35,width:125 }}/>
+            </Body>
           <Right>
-           {icon}
           </Right>
         </Header>
 
@@ -57,18 +62,62 @@ import moment from 'moment';
 class Feed extends PureComponent {
   constructor(props) {
        super(props);
+        this.retrieveData();
+         // this.removeEverything();
        this.state = {
            isLoading: true,
            data: null,
            dataimage: null,
            isError: false,
-            url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage"
+            url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage",
+            token:"",
+            obj:{
+              name:'tarif',
+              password:'123456'
+            }
+
        }
    }
+   removeEverything = async () => {
+     try {
+       await AsyncStorage.clear()
+       alert('Storage successfully cleared!')
+     } catch (e) {
+       alert('Failed to clear the async storage.')
+     }
+   }
+   save = async name => {
+       try {
+          this.setState({ token:'abc123' })
+         await AsyncStorage.setItem('token', 'abc123' )
+         await AsyncStorage.setItem('obj', JSON.stringify( {obj:this.state.data}))
+         console.log(this.state.token)
+         console.log(this.state.data)
 
+       } catch (e) {
+         alert('Failed to save name.')
+       }
+     }
+
+     retrieveData = async () => {
+    try {
+      const name = await AsyncStorage.getItem('token')
+      const obj = await AsyncStorage.getItem('obj')
+      const obj1 = JSON.parse(obj)
+      if (name !== null) {
+        this.setState({ token:name })
+      }
+      if (obj1 !== null) {
+        this.setState({ data:obj1 })
+      }
+    } catch (e) {
+      alert('Failed to load name.')
+    }
+  }
 
    componentDidMount() {
      // let url="https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage";
+     if(this.state.data==null){
        getArticles(this.state.url).then(data => {
            this.setState({
                isLoading: false,
@@ -78,10 +127,14 @@ class Feed extends PureComponent {
        }, error => {
            Alert.alert("Error", "Something happend, please try again")
        })
+     }
+     else{
+ this.retrieveData()
+
+     }
    }
 
   render() {
-
 
     console.disableYellowBox = true;
     const { params } =  this.props.navigation.state;
@@ -102,66 +155,42 @@ if(params!=null) {
 
 }
 
-
      let view = this.state.isLoading ? (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator animating={this.state.isLoading} color="#00f0ff" />
-        <Text style={{ marginTop: 8 }} children="" />
-    </View>
-) : (
-        <List
+         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+             <ActivityIndicator animating={this.state.isLoading} size="large" color="#00f0ff" />
+             <Text style={{ marginTop: 8 }} children="" />
+         </View>
+     ) : (    <List
         style={{width: '100%'}}
             dataArray={this.state.data}
             keyExtractor={(item,index) => index.toString()}
  renderItem = {({item, index}) => {
           let t=item.body;
+          let body=t.slice(44, 300);
           let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
-if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+        if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
         {  var imageurlMedium = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;}
         if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
-                {      var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
+        {  var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
+         const time=  item.pubDate;
+          const category= item.mainDestinationName;
+          let commentscount=item.comments.count;
 
-// const Imagecompone =imageurlSmall?(<Thumbnail style={{ backgroundColor: '#eee', alignSelf: 'center' }} square large  source={{ cache:'force-cache', uri:imageurlSmall!= null ? "http://image-api.suckup.de/image-api.php?file="+imageurlSmall+"&quality=25" : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII='}}/>):null;
-//           for (let key in item['object_definitions']) {
-//           if((item['object_definitions'][key]['crop_definitions'])){
-//               let value = item['object_definitions'][key];
-//              // console.log(value);
-//               for ( let i in value) {
-//           if((i=='crop_definitions')&&(value['crop_definitions']!="undefined")){
-//             var imgurl=value['crop_definitions']['dpi_small'].url;
-//             // console.log(imgurl);
-//           }
-//           }
-// }
-//
-//            }
-
-             // Object.keys(item['object_definitions']).forEach(function(value, key) {
-             //   console.log(value);
-             //   // item['object_definitions'][value].forEach(function(v, k) {
-             //  value.forEach(function(v, k) {
-             //       console.log(v.crop_definition.dpi_small.url)
-             //     })
-             //    // console.log(value[0].crop_definitions.dpi_small)
-             //   // })
-             // });
-
-       let result=t.slice(44, 300);
         if(index%4==0)    return (
-                      <ListItem style={{marginLeft: 0,marginRight: 0,backgroundColor: index%3==0 ? 'black' : 'white'}}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 0,justifyContent :'center',alignItems: 'center',flexDirection:'row'}} activeOpacity={0.5}>
-                  <Body style={{ width:Dimensions.get('window').width}}>
-                  <Thumbnail style={{ marginLeft:13,marginRight:0,width:null, height: 180, backgroundColor: '#eee'  }} square large  source={{ cache:'force-cache', uri:imageurlMedium!= null ? imageurlMedium : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII=' }} />
-                      <Text  numberOfLines={3} style={{fontFamily:'Pacifico',fontSize: 20 ,color: index%3==0 ? 'white' : 'black'}} numberOfLines={2}>{item.title}</Text>
-                      <Text note numberOfLines={3} style={{fontSize: 16 ,marginRight: 0}}>{result}</Text>
-                      <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
-                        <Time date={item.pubDate} />
-                          <Text note>|  {item.mainDestinationName}</Text>
+                      <ListItem style={{backgroundColor: index%3==0 ? 'black' : 'white' ,marginLeft:0,paddingLeft:13,paddingRight:13}}>
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{justifyContent :'center',alignItems: 'center',flexDirection:'row'}} activeOpacity={0.5}>
+                  <Body style={{ }}>
+                  <Thumbnail style={{ marginBottom:7,marginLeft:0,paddingRight:0,width:null, height: 180, backgroundColor: '#eee'  }} square large  source={{ cache:'force-cache', uri:imageurlMedium!= null ? imageurlMedium : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII=' }} />
+                      <Text numberOfLines={3}  style={{marginBottom:10,marginLeft:0,marginRight:0,paddingRight:0,fontFamily:'Pacifico',fontSize: 22 ,color: index%3==0 ? 'white' : 'black'}} >{item.title}</Text>
+                      <Text  numberOfLines={3} style={{marginRight:0,marginBottom:10,color: index%3==0 ? 'white' : 'black',marginLeft:0,paddingRight:0,fontSize: 16 ,marginRight: 0}}>{body}</Text>
+                      <View style={{ flexDirection: 'row', marginTop: 8 }}>
+                        <Time style={{  }}date={time} />
+                        <Text note style={{alignSelf:"center",marginLeft:0, marginBottom:0}}>{`\uff5c ${category}`}</Text>
                   <View style={{ flex: 1, flexDirection: 'row', marginTop: 0, marginLeft: 0 ,marginRight: 2 ,justifyContent :'flex-end',alignItems: 'center'}}>
-                   <Icon style={{ marginLeft: 10 }} name="bookmark" size={14} color={index%3==0 ? 'white' : 'black'}  />
-                      <Icon style={{ marginLeft: 17 }} name="comment" size={14} color={index%3==0 ? 'white' : 'black'}  />
-                         <Text style={{fontSize: 12,color:"white",marginLeft: 5 }}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
-                <Icon style={{ marginLeft: 0 }} name="share-alt" size={14} color={index%3==0 ? 'white' : 'black'}  />
+                   <Icon style={{ marginLeft: 10 }} name="bookmark" size={17} color={index%3==0 ? 'white' : 'black'}  />
+                      <Icon style={{ marginLeft: 17 }} name="comment" size={17} color={index%3==0 ? 'white' : 'black'}  />
+                         <Text style={{fontSize: 16,color:"white",marginLeft: 5 }}>{commentscount=commentscount>0?item.comments.count:null}</Text>
+                <Icon style={{ marginLeft: 0 }} name="share-alt" size={17} color={index%3==0 ? 'white' : 'black'}  />
                       </View>
                         </View>
                   </Body>
@@ -170,25 +199,27 @@ if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
 
                   )
                    else  return (
-                     <ListItem style={{marginLeft: 0,backgroundColor: index%3==0 ? 'black' : 'white'}}>
-                     <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 0,justifyContent :'center',alignItems: 'center',flexDirection:'row',backgroundColor: index%3==0 ? 'black' : 'white'}} activeOpacity={0.5}>
-                 <Body>
-                     <Text  numberOfLines={3} style={{fontSize: 16,color: index%3==0 ? 'white' : 'black' }} numberOfLines={2}>{item.title}</Text>
-                     <Text note numberOfLines={2}>{result}</Text>
-                     <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
+                     <ListItem style={{marginLeft: 0,paddingLeft:13,paddingRight:13,backgroundColor: index%3==0 ? 'black' : 'white'}}>
+                     <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{justifyContent :'center',alignItems: 'center',flexDirection:'row'}} activeOpacity={0.5}>
+                 <View  style={{  flex: 1,
+        flexDirection: 'column',alignSelf: 'flex-end', alignItems: 'flex-end' ,
+marginBottom:0,paddingBottom:0}}>
+                     <Text numberOfLines={3}  style={{marginBottom:5,marginLeft:0,paddingRight:0,fontSize: 18,color: index%3==0 ? 'white' : 'black' }} >{item.title}</Text>
+                     <Text numberOfLines={2} style={{marginBottom:5,marginLeft:0,paddingRight:0,fontSize: 14,color: index%3==0 ? 'white' : 'black' }}>{body}</Text>
+                     <View style={{ flex: 1, flexDirection: 'row' ,alignSelf: 'flex-start', marginLeft: 0 }}>
                        <Time date={item.pubDate} />
-                         <Text note>|  {item.mainDestinationName}</Text>
+                         <Text note style={{ marginLeft: 0,marginBottom:0 }}>{`\uff5c ${item.mainDestinationName}`}</Text>
                      </View>
-                 </Body>
-                 <View style={{  flexDirection: 'column' }}>
-              <Thumbnail style={{ backgroundColor: '#eee', alignSelf: 'center' }} square large  source={{ cache:'force-cache', uri:imageurlSmall!= null ? imageurlSmall : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII='}}/>
-                 <View style={{ flex: 1, flexDirection: 'row',justifyContent: 'space-between', alignItems: 'center', marginTop: 15 }}>
-                 <Icon style={{ marginLeft: 0 }} name="bookmark" size={10} color={index%3==0 ? 'white' : 'black'}  />
+                     </View>
+                    <View style={{  flexDirection: 'column',alignSelf: 'flex-end', alignItems: 'center' }}>
+              <Thumbnail style={{ flexDirection: 'row',marginLeft:5,marginBottom:20,justifyContent: 'center',backgroundColor: '#eee' }} square large  source={{ cache:'force-cache', uri:imageurlSmall!= null ? imageurlSmall : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII='}}/>
+                  <View style={{ flexDirection: 'row',alignSelf: 'stretch',justifyContent: 'space-between' }}>
+                 <Icon style={{ marginLeft: 0 }} name="bookmark" size={12} color={index%3==0 ? 'white' : 'black'}  />
                    <View style={{ flexDirection: 'row',alignItems: 'flex-start',justifyContent: 'flex-start' }}>
-                    <Icon name="comment" size={10} color={index%3==0 ? 'white' : 'black'} />
-                    <Text style={{fontSize: 8,marginLeft: 2 ,paddingTop: 0 ,color:index%5==0 ? 'white' : 'black'}}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
-                      </View>
-                  <Icon name="share-alt" size={10} color={index%3==0 ? 'white' : 'black'} />
+                     <Icon name="comment" size={12} color={index%3==0 ? 'white' : 'black'} />
+                     <Text style={{fontSize: 8,marginLeft: 2 ,paddingTop: 0 ,color:index%5==0 ? 'white' : 'black'}}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
+                    </View>
+                  <Icon name="share-alt" size={12} color={index%3==0 ? 'white' : 'black'} />
                  </View>
                  </View>
                          </TouchableOpacity>
@@ -203,7 +234,7 @@ return (
      <Container>
       <CustomHeader  title='Tageblatt'   isHome={true} navigation={this.props.navigation} />
                <Content
-                   contentContainerStyle={{ marginLeft: 0,flex:1,alignItems: 'center', justifyContent: 'center', backgroundColor: 'white' }}
+                   contentContainerStyle={{ backgroundColor:"white", width:Dimensions.get('window').width,flex:1,alignItems: 'center', justifyContent: 'center' }}
               children={view}  >
                </Content>
            </Container>
@@ -211,491 +242,6 @@ return (
 
   }
 }
-
-
-//
-// class Category extends PureComponent {
-//   constructor(props) {
-//        super(props);
-//        this.state = {
-//            isLoading: true,
-//            data: null,
-//            dataimage: null,
-//            isError: false,
-//             url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage"
-//        }
-//    }
-//
-//
-//    // componentDidMount() {
-//    //   // let url="https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage";
-//    //     getArticles(this.state.url).then(data => {
-//    //         this.setState({
-//    //             isLoading: false,
-//    //       data: data.packages
-//    //
-//    //         })
-//    //     }, error => {
-//    //         Alert.alert("Error", "Something happend, please try again")
-//    //     })
-//    // }
-//
-//   render() {
-//
-//
-//     console.disableYellowBox = true;
-//     const { params } =  this.props.navigation.state;
-// // const imageurl = params ? params['object_definitions'][params['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
-//     // let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
-//     // let imageurl = (typeof item['object_definitions'][t1]['crop_definitions']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;
-//
-// console.log(params);
-//
-//   if(params!=null) {
-//   getArticles(params.urll).then(data => {
-//       this.setState({
-//           isLoading: false,
-//     data: data.packages,
-// // isSideMenuOpen: !this.state.isSideMenuOpen
-//       })
-//   }, error => {
-//       Alert.alert("Error", "Something happend, please try again")
-//   }
-// )
-//
-// }
-//
-//      let view = this.state.isLoading ? (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//         <ActivityIndicator animating={this.state.isLoading} color="#00f0ff" />
-//         <Text style={{ marginTop: 8 }} children="" />
-//     </View>
-// ) : (
-//         <List
-//         style={{width: '100%'}}
-//             dataArray={this.state.data}
-//             keyExtractor={(item,index) => index.toString()}
-//  renderItem = {({item, index}) => {
-//           let t=item.body;
-//           let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
-//           let imageurl = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;
-// console.log(item);
-//
-//        let result=t.slice(44, 300);
-//         if(index%4==0)    return (
-//                       <ListItem style={{ marginLeft: 0,backgroundColor: index%3==0 ? 'black' : 'white'}}>
-//                       <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 20,justifyContent :'center',alignItems: 'center',flexDirection:'row'}} activeOpacity={0.5}>
-//                   <Body>
-//                   <Thumbnail style={{ marginLeft:13,width:null, height: 180, backgroundColor: '#eee'  }} square large  source={{ cache:'force-cache', uri:imageurl!= null ? "http://image-api.suckup.de/image-api.php?file="+imageurl+"&quality=50" : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII=' }} />
-//                       <Text  numberOfLines={3} style={{fontFamily:'Pacifico',fontSize: 20 ,color: index%3==0 ? 'white' : 'black'}} numberOfLines={2}>{item.title}</Text>
-//                       <Text note numberOfLines={3} style={{fontSize: 16 }}>{result}</Text>
-//                       <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
-//                         <Time date={item.pubDate} />
-//                           <Text note>|  {item.mainDestinationName}</Text>
-//                   <View style={{ flex: 1, flexDirection: 'row', marginTop: 0, marginLeft: 0 ,marginRight: 20 ,justifyContent :'flex-end',alignItems: 'center'}}>
-//                    <Icon style={{ marginLeft: 10 }} name="bookmark" size={14} color={index%3==0 ? 'white' : 'black'}  />
-//                       <Icon style={{ marginLeft: 17 }} name="comment" size={14} color={index%3==0 ? 'white' : 'black'}  />
-//                          <Text style={{fontSize: 12,color:"white",marginLeft: 5 }}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
-//                 <Icon style={{ marginLeft: 0 }} name="share-alt" size={14} color={index%3==0 ? 'white' : 'black'}  />
-//                       </View>
-//                         </View>
-//                   </Body>
-//                   </TouchableOpacity>
-//                     </ListItem>
-//
-//                   )
-//                    else  return (
-//                      <ListItem style={{marginLeft: 0,backgroundColor: index%3==0 ? 'black' : 'white'}}>
-//                      <TouchableOpacity onPress={() => this.props.navigation.navigate('FeedDetail',item)} style={{marginLeft: 20,justifyContent :'center',alignItems: 'center',flexDirection:'row',backgroundColor: index%3==0 ? 'black' : 'white'}} activeOpacity={0.5}>
-//                  <Body>
-//                      <Text  numberOfLines={3} style={{fontSize: 16,color: index%3==0 ? 'white' : 'black' }} numberOfLines={2}>{item.title}</Text>
-//                      <Text note numberOfLines={2}>{result}</Text>
-//                      <View style={{ flex: 1, flexDirection: 'row', marginTop: 8, marginLeft: 0 }}>
-//                        <Time date={item.pubDate} />
-//                          <Text note>|  {item.mainDestinationName}</Text>
-//                      </View>
-//                  </Body>
-//                  <View style={{  flexDirection: 'column' }}>
-//                  <Thumbnail style={{ backgroundColor: '#eee', alignSelf: 'center' }} square large  source={{ cache:'force-cache', uri:imageurl!= null ? "http://image-api.suckup.de/image-api.php?file="+imageurl+"&quality=25" : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWBAMAAADOL2zRAAAAG1BMVEXMzMyWlpajo6PFxcW3t7ecnJyqqqq+vr6xsbGXmO98AAAACXBIWXMAAA7EAAAOxAGVKw4bAAABPUlEQVRoge3Tv0/CQBjG8YcWaMcebymOENLI2MZoHMHEvVUKjq1K4lhM2Kvxx7/tUUiamDhc6GSez8INzbf3HleAiIiIiIiIiIiIiNozAGzvuJYTW2reXmso7bX8YN96HUR1a7RZ6+VVOgU+p4LuZGrSkqK0PWfwfl+3ht/hcpdvPkJ0g0fBYpYZtS7HttfPMatbAbZzJ1kjjnqVK1ihNzdpdX3b65S4qVsjXbG9EtuoEzliC/RbDFoIL7wY2NZrQayPzw1VpH/FUUqNjVrx0+9W8Rzrlt7yMMvMWq7fzHhoCTp6Rr0vw0uiH8+as69bov/AyNqf/Rms3Ky1aO7EYV93X2nlBIXg7WVSmrWs5q4eWrvVdYLbpR4/PTeZ8S9O82mdzMr7SVstV6mqrRaKh9ZSRERERERERET0n/wAZwMqI9kyPcoAAAAASUVORK5CYII=' }} />
-//                  <View style={{ flex: 1, flexDirection: 'row',justifyContent: 'space-between', alignItems: 'center', marginTop: 15 }}>
-//                  <Icon style={{ marginLeft: 0 }} name="bookmark" size={10} color={index%3==0 ? 'white' : 'black'}  />
-//                    <View style={{ flexDirection: 'row',alignItems: 'flex-start',justifyContent: 'flex-start' }}>
-//                     <Icon name="comment" size={10} color={index%3==0 ? 'white' : 'black'} />
-//                     <Text style={{fontSize: 8,marginLeft: 2 ,paddingTop: 0 ,color:index%5==0 ? 'white' : 'black'}}>{item.comments.count=item.comments.count>0?item.comments.count:null}</Text>
-//                       </View>
-//                   <Icon name="share-alt" size={10} color={index%3==0 ? 'white' : 'black'} />
-//                  </View>
-//                  </View>
-//                          </TouchableOpacity>
-//                    </ListItem>
-//
-//                    )
-//             }} />
-//
-//     )
-//   // let IMAGEHEADER= <Image source={IMAGE.ICON_MENU} style={{ height:20,width:120 }}/>
-// return (
-//      <Container>
-//       <CustomHeader  title='Tageblatt'   isHome={true} navigation={this.props.navigation} />
-//                <Content
-//                    contentContainerStyle={{ marginLeft: 0,flex:1,alignItems: 'center', justifyContent: 'center', backgroundColor: 'white' }}
-//               children={view}  >
-//                </Content>
-//            </Container>
-// )
-//
-//   }
-// }
-
-
-class FeedDetail extends React.Component {
-
-  render() {
-
-const { params } = this.props.navigation.state;
-const imageurl = params ? params['object_definitions'][params['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
-const urlshare = params ? params['object_relations'][1].uri : null;
-const links=params ? params['object_definitions'][params['object_relations'][1]['uri']]['links']: null;
-const commentscount= parseInt(params.comments.count);
-// console.log(commentscount);
-console.log(urlshare);
-const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message:params.title + '\n' + urlshare,
-
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-const page = commentscount > 0 ? "Comments" : "AddComments";
-    // <HTML html={body}    />
-var styles = StyleSheet.create({
-p: {
- fontSize: 16,
-color: 'black', // pink links
-},
-});
-var htmlContent =params ? params.body: null;
-  const MEHR =links?(<Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>):null;
-    return (
-
-      <View style={{ flex: 1 }}>
-          <ScrollView>
-        <CustomHeader  title={params.mainDestinationName}  navigation={this.props.navigation} />
-      <View style={{ marginLeft: 15,flex: 1,fontFamily:'Tageblatt Picto', flexDirection: 'column',  justifyContent: 'center',alignItems: 'flex-start' }}>
-        <Text style={{ flex: 1,fontSize: 24,marginTop: 15 }}>{params.title}</Text>
-      <View style={{ flex: 1, flexDirection: 'row',alignItems: 'center', marginBottom:5}}>
-        <Text style={{fontSize: 16 }}>{params.mainDestinationName}  |  </Text>
-      <Time1 date={params.pubDate} style={{ fontSize: 16}}/>
-      </View>
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
-        <Image
-         style={{
-           flex: 1,
-         width:Dimensions.get('window').width-30,height: 288
-         }}
-         source={{uri:this.props.navigation.state.params['object_definitions'][this.props.navigation.state.params['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url}}
-         />
-         <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{this.props.navigation.state.params['object_definitions'][this.props.navigation.state.params['object_relations'][0]['uri']]['caption']}</Text>
-     </View>
-      <View style={{   flex:8,
-    width:Dimensions.get('window').width-30}}>
-      <HTML html={htmlContent}
-      imagesMaxWidth={Dimensions.get('window').width-30}
-      tagsStyles={{
-          p: {
-    fontSize:Dimensions.get('window').width*0.05,
-      // textAlign: 'left',
-      // flexWrap: 'wrap',
-// width: '6.5%'
-},
-blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
-
-}}
- classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
-      />
-      </View>
-        {MEHR}
-        <List  style={{marginBottom:50}}
-            dataArray={links}
-        renderItem={({item})=>{
-          return (
-                      <ListItem style={{marginLeft: 0}} noBorder>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleLink',item)} style={{flexDirection:'row'}} activeOpacity={0.5}>
-                      <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{item.title}</Text>
-                          </TouchableOpacity>
-                    </ListItem>
-                  )
-            }} />
-              <View style = {styles.button_style}>
-            <Button danger onPress={() =>this.props.navigation.navigate( page,params)} >
-      <Text>KOMMENTARE</Text>
-          </Button>
-            </View>
-      </View>
-              </ScrollView>
-        <View  navigation={this.props.navigation}  style={{ marginTop:5,paddingHorizontal:20,backgroundColor: '#c4c6ca',justifyContent: 'space-around', alignItems: 'flex-start',flexDirection:'row',height:50 }}>
-          <View  style={{  flexDirection: 'row',alignItems: 'center'}}>
-              <Button transparent>
-                 <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,params)}    size={20} color='#939497'/>
-              </Button>
-               <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{params.comments.count}</Text>
-          </View>
-        <Button transparent>
-          <Icon name='facebook-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-        </Button>
-        <Button transparent>
-          <Icon name='twitter-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-        </Button>
-        <Button transparent>
-          <Icon name='share-alt' onPress={onShare} size={20} color='#939497'/>
-        </Button>
-        </View>
-          </View>
-
-    );
-  }
-}
-
-//
-//
-//
-//
-// class ArticleLink extends React.Component {
-//   constructor(props) {
-//        super(props);
-//          this.state = {
-//       isLoading: true,
-//       data: null,
-//       isError: false,
-//   }
-// }
-//
-//   render() {
-// const { params } = this.props.navigation.state;
-//
-// if(params!=null) {
-//    getArticleLinks(params.nid).then(data => {
-//       this.setState({
-//           isLoading: false,
-//     data: data
-//       })
-//   }, error => {
-//       Alert.alert("Error", "Something happend, please try again")
-//   }
-// )
-// }
-// // const imageurl = this.state.data ? this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
-// const links=this.state.data? this.state.data['object_definitions'][this.state.data['object_relations'][1]['uri']]['links']: null;
-// const title= this.state.data? this.state.data.title:null;
-// // const  mainDestinationName= this.state.data? this.state.data.mainDestinationName:null;
-// const author= this.state.data?this.state.data.authors[0].name:null;
-// var pubDate=this.state.data?(new Date(parseInt(this.state.data.pubDate+'000')).toISOString()):null;
-// let date1 = new Date(pubDate);
-//  const time = moment(date1).format('DD[/]MM[/]YYYY  HH:mm');
-// const imageurl= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_small'].url: null;
-// const captionimage= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['caption']: null;
-// const body=this.state.data? this.state.data.body: null;
-//  const commentscount= this.state.data? parseInt(this.state.data.comments.count): null;
-//  const page = commentscount > 0 ? "Comments" : "AddComments";
-//
-// // console.log(links);
-// // console.log(pubDate);
-//
-// //  let  dateobj = new Date(parseInt(pubDate)).toISOString();
-// //  let date1 = new Date(dateobj);
-// // const time = (moment(date1).format("MMM Do YY")==moment().format("MMM Do YY"))?moment(date1).format('h:mm'): moment(date1).format('MM[/]DD');
-//
-//  return (
-//
-//       <View style={{ flex: 1 }}>
-//           <ScrollView>
-//         <CustomHeader   />
-//       <View style={{ marginLeft: 15,flex: 1,fontFamily:'Tageblatt Picto', flexDirection: 'column',  justifyContent: 'center',alignItems: 'flex-start' }}>
-//         <Text style={{ flex: 1,fontSize: 24,marginTop: 15 }}>{title}</Text>
-//         <View style={{ flex: 1, flexDirection: 'row',alignItems: 'center', marginBottom:5}}>
-//           <Text style={{ fontSize: 16}}>{author}  |  </Text>
-//               <Text style={{ fontSize: 16}}>{time}</Text>
-//         </View>
-//         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20}}>
-//         <Image
-//          style={{
-//            flex: 1,
-//          width:Dimensions.get('window').width-30,height: 288
-//          }}
-//          source={{uri:imageurl}}
-//          />
-//          <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{captionimage}</Text>
-//      </View>
-//       <View style={{   flex:8,
-//     width:Dimensions.get('window').width-30}}>
-//       <HTML html={body}
-//       imagesMaxWidth={Dimensions.get('window').width-30}
-//       tagsStyles={{
-//           p: {
-//     fontSize:Dimensions.get('window').width*0.05,
-//       // textAlign: 'left',
-//       // flexWrap: 'wrap',
-// // width: '6.5%'
-// },
-// blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensions.get('window').width*0.05},img: {marginTop:10},figcaption:{marginBottom:20}
-//
-// }}
-//  classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
-//       />
-//       </View>
-//             <Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>
-//           <List  style={{marginBottom:50}}
-//               dataArray={links}
-//           renderItem={({item})=>{
-//               return (
-//                         <ListItem style={{marginLeft: 0}} noBorder>
-//                         <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleLink',item)} style={{flexDirection:'row'}} activeOpacity={0.5}>
-//                         <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{item.title}</Text>
-//                             </TouchableOpacity>
-//                       </ListItem>
-//                     )
-//               }} />
-//                 <View style = {styles.button_style}>
-//               <Button danger >
-//         <Text>KOMMENTARE</Text>
-//             </Button>
-//               </View>
-//         </View>
-//               </ScrollView>
-//               <View  navigation={this.props.navigation}  style={{ marginTop:5,paddingHorizontal:20,backgroundColor: '#c4c6ca',justifyContent: 'space-around', alignItems: 'flex-start',flexDirection:'row',height:50 }}>
-//                 <View  style={{  flexDirection: 'row',alignItems: 'center'}}>
-//                     <Button transparent>
-//                        <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,this.state.data)}  size={20} color='#939497'/>
-//                     </Button>
-//                      <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{commentscount}</Text>
-//                 </View>
-//               <Button transparent>
-//                 <Icon name='facebook-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-//               </Button>
-//               <Button transparent>
-//                 <Icon name='twitter-square' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-//               </Button>
-//               <Button transparent>
-//                 <Icon name='share-alt' onPress={() => this.props.navigation.navigate('Comments')} size={20} color='#939497'/>
-//               </Button>
-//               </View>
-//                 </View>
-//
-//  );
-//
-//   }
-// }
-//
-//
-//
-// class Comments extends React.Component {
-//  constructor(props) {
-//       super(props);
-//   }
-//  render() {
-//    const { params } = this.props.navigation.state;
-//    return (
-//      <View  style={{ flex: 1 }}>
-//     <CustomHeader  title='Kommentare'  navigation={this.props.navigation} />
-//      <View style={{ flex: 1,justifyContent: 'center', alignItems: 'center' }}>
-//         <Text style={{ fontSize: 24,marginTop: 15, marginLeft: 13 }}>{params.title}</Text>
-//         <List
-//             dataArray={params.comments.list}
-//         renderItem={({item})=>{
-//             return (
-//                 <ScrollView>
-//                       <ListItem style={{ flexDirection: 'column'}}>
-//                       <View style={{ flexDirection: 'row', marginBottom:5}}>
-//                         <Text   style={{fontSize: 8 }} >{item.comment_author_name}</Text>
-//                         <Text   style={{fontSize: 8 }} >{item.comment_date.slice(0,16)}</Text>
-//                       </View>
-//                       <View>
-//                       <Text  style={{fontSize: 12 }} >{item.comment_content}</Text>
-//                       </View>
-//                     </ListItem>
-//                       </ScrollView>
-//                   )
-//             }} />
-//      </View>
-//      <View style={{ backgroundColor: 'white',justifyContent: 'center', alignItems: 'center',height:50 }}>
-//          <Button style={{ backgroundColor: 'red',padding:20}} onPress={() => this.props.navigation.navigate('AddComments',params)}>
-//          <Text style={{ color: 'white'}}>SCHREIBEN SIE EINEN KOMMENTAR</Text>
-//          </Button>
-//      </View>
-//        </View>
-//        );
-//  }
-// }
-//
-// class AddComments extends React.Component {
-//  constructor(props) {
-//       super(props);
-//       this.state = {
-//          name: '',
-//      email: ''
-//   }
-//   }
-//   handleEmail = (text) => {
-//      this.setState({ email: text })
-//   }
-//   handleName = (text) => {
-//      this.setState({ name: text })
-//   }
-//  render() {
-// const { params } = this.props.navigation.state;
-// // console.log(this.state.email);
-//    return (
-//      <View  style={{ flex: 1 }}>
-//      <Header style={{ backgroundColor: 'black' }} navigation={this.props.navigation}>
-//        <Left>
-//          <Button transparent>
-//            <Icon name='arrow-left' size={25} color="white" onPress={() => this.props.navigation.goBack()}/>
-//          </Button>
-//          </Left>
-//        <Body>
-//          <Title style={{ fontSize: 16 }}>SCHREIBEN SIE EINEN KOMMENTAR</Title>
-//        </Body>
-//      </Header>
-//      <View style={{ flex:1,justifyContent: 'center', alignItems: 'center' }}>
-//      <Button style={{marginTop: 5, marginLeft:10,backgroundColor: 'red',padding:15}} onPress={() => this.props.navigation.navigate('Comments',params)}>
-//      <Text style={{ color: 'white'}}>ABSENDEN</Text>
-//      </Button>
-//      <TextInput style = {styles.input}
-//              underlineColorAndroid = "transparent"
-//              placeholder = "Name"
-//              placeholderTextColor = "#C8C8C8"
-//              autoCapitalize = "none"
-//              onChangeText = {this.handleName}/>
-//      <TextInput style = {styles.input}
-//              underlineColorAndroid = "transparent"
-//              placeholder = "E-mail"
-//              placeholderTextColor = "#C8C8C8"
-//              autoCapitalize = "none"
-//              onChangeText = {this.handleEmail}/>
-//           <Text style={{ color: 'black',  margin: 10}}>Kommentar:</Text>
-//           <TextInput style = {styles.textarea}
-//                   underlineColorAndroid = "transparent"
-//                   autoCapitalize = "none"
-//                    numberOfLines={10}
-//                   onChangeText = {this.handleEmail}/>
-//      </View>
-//      </View>
-//        );
-//  }
-// }
 
 class SideMenu extends React.Component {
   constructor(props) {
@@ -854,18 +400,18 @@ const FeedStack = createStackNavigator({
     screen: FeedDetail,
     navigationOptions:navOptionHandler
   },
-  // Comments: {
-  //   screen: Comments,
-  //   navigationOptions:navOptionHandler
-  // },
-  // AddComments: {
-  //   screen: AddComments,
-  //   navigationOptions:navOptionHandler
-  // },
-  // ArticleLink: {
-  //   screen: ArticleLink,
-  //   navigationOptions:navOptionHandler
-  // },
+  Comments: {
+    screen: Comments,
+    navigationOptions:navOptionHandler
+  },
+  AddComments: {
+    screen: AddComments,
+    navigationOptions:navOptionHandler
+  },
+  ArticleLink: {
+    screen: ArticleLink,
+    navigationOptions:navOptionHandler
+  },
 });
 
 const MyDrawerNavigator = createDrawerNavigator(
@@ -900,11 +446,12 @@ background_Image: {
  justifyContent: 'center',
 },
  button_style: {
-    flexDirection: 'row',
-   justifyContent: 'flex-end',
-   alignItems: 'flex-end',
-    marginBottom: 20,
-    marginHorizontal:120,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+   // alignItems: 'flex-end',
+   // alignSelf:'center',
+    // marginBottom: 20,
+    // marginHorizontal:120,
     // position: 'absolute', top: 0, left: 0, right: 0, height: 300, alignItems: 'center', justifyContent: 'center'
  },
   input: {
