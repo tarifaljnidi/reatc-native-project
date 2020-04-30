@@ -69,7 +69,7 @@ class Feed extends PureComponent {
            data: null,
            dataimage: null,
            isError: false,
-            url:"https://nux3.tageblatt.lu/dpijson/v1/section/0/Homepage",
+            url:"https://awstgb2.tageblatt.lu/dpijson/v1/section/0/Homepage",
             token:"",
             obj:{
               name:'tarif',
