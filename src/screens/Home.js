@@ -318,7 +318,7 @@ if(index==3) return (
                  keyExtractor={(item,index) => index.toString()}
                renderItem={({item,index}) =>
                    <View>
-                       <ListItem style={styles.row}onPress={() => this.props.navigation.navigate('Feed',{urll:`https://nux3.tageblatt.lu/${item.value}`}) &&this.props.navigation.closeDrawer()}>
+                       <ListItem style={styles.row}onPress={() => this.props.navigation.navigate('Feed',{urll:`https://awstgb2.tageblatt.lu/${item.value}`}) &&this.props.navigation.closeDrawer()}>
                            <Text >{item.key}</Text>
                        </ListItem>
                        <View />
@@ -329,7 +329,7 @@ if(index==3) return (
   </View>
         )
         else return (
-              <ListItem  style={{  marginLeft: 20,marginRight: 20}}  onPress={() => this.props.navigation.navigate('Feed',{urll:`https://nux3.tageblatt.lu/${item.feed}`}) &&this.props.navigation.closeDrawer()}>
+              <ListItem  style={{  marginLeft: 20,marginRight: 20}}  onPress={() => this.props.navigation.navigate('Feed',{urll:`https://awstgb2.tageblatt.lu/${item.feed}`}) &&this.props.navigation.closeDrawer()}>
               <Text style={{ marginLeft: 0 }}>{item.label}</Text>
               </ListItem >
         )
