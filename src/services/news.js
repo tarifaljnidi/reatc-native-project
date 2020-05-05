@@ -5,10 +5,8 @@ import { _api_key, language, category, articles_url, getimages_url} from '../con
 export async function getArticles(url){
 
     try {
-        let articles = await fetch(url,{
-            headers:{  }
-        });
-      let result = await articles.json();
+        let articles = await fetch(url,{headers:{}});
+    let result = await articles.json();
         // let result ={
         //            "title": "Homepage",
         //            "link": "https://www.tageblatt.lu/",
@@ -227,22 +225,556 @@ export async function getArticles(url){
         //                        "count": 14,
         //                        "list": [
         //                            {
-        //                                "comment_author_name": "",
+        //                                "comment_author_name": "peter",
         //                                "comment_content": "De Poltermischi a seng Leit, a blast from the past.\r\nHoffentlech kommen se ni méi erëm.",
         //                                "comment_date": "2020-04-12 17:10:01"
         //                            },
         //                            {
-        //                                "comment_author_name": "",
+        //                                "comment_author_name": "jean",
         //                                "comment_content": "@Alain Thill \r\n\r\n\r\n\"Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“\r\nUnd die Maske von Zorro für Michel WOLTER!\"\r\n\r\nWeil er schwarz ist oder weil sie Mund und Nase nicht bedeckt?",
         //                                "comment_date": "2020-04-12 17:03:56"
         //                            },
         //                            {
-        //                                "comment_author_name": "",
+        //                                "comment_author_name": "jean",
         //                                "comment_content": "Die schwarze Bulldogge hat wieder mal eine Gelegenheit verpasst den Mund zu halten.",
         //                                "comment_date": "2020-04-12 12:24:41"
         //                            },
         //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“ \nUnd die Maske von Zorro für Michel WOLTER!",
+        //                                "comment_date": "2020-04-11 18:41:46"
+        //                            },
+        //                            {
         //                                "comment_author_name": "",
+        //                                "comment_content": "einfach mal etwas weiter ueber den tellerrand blicken und schon ist optimismus angesagt.neugierig geworden weil israel 95 todesfaelle durch corona hat bei 9 millionen einwohner habe ich mal die jerusalem post angeklickt.in einem artikel wird geschrieben dass es 100 prozent erfolgreiche plasmatherapie sogar fuer schwerste faelle gibt.ein anderer artikel handelt ueber die zuversicht der israelischen forscher in drei monaten eine schluckimpfung kommerzualisieren zu koennen weil das neue virus sich nur unwesentlich von anderen bekannten viren unterscheidet die menschen befallen.man reibt sich die augen.",
+        //                                "comment_date": "2020-04-11 18:04:30"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@Kutten: Ich verstehe absolut die Sorgen verschiedener Betriebe, aber gemäss der kapitalistischem Doktrin überlebt nur der Finanzstarke, sprich der in Zeiten des Überflusses wohl anhand der  Gewinne  Rücklagen „ en Aapel fir den Duscht“ gemacht hat. Naiv wäre der , der jetzt glaubt es würde alles so weiterlaufen, wie vor der Krise, wo die Spass- und Konsumgesellschaft sorgenlos das Geld verprasst, dem Schuldenmachen gefrönt, die Zukunft nicht abgesichert hat , sich auf eventuelle Krisen, Katastrophen vorzubereiten. Wir sollten die Krise nutzen , unsere Lebensweise zu überdenken, weniger Wirtschaftswachstum , den Menschen , die Natur in den Mittelpunkt stellen. Dieses Virus war eine Warnung , nutzen wir diesen Wink zum Umdenken. Übrigens bin ich der Meinung , jeder verantwortungsvoller, seriöser , arbeitsbewusster Handwerker, Händler.... wird auch Krisenzeiten , das Danach überleben. Wenn Sie nun meinen , betreffend meine Person , ich müsste auf vieles verzichten , ich habe schon vor dieser Krise dem Konsumrausch, dem Reisen , den Modetrends,....... entsagt, mir  liegt mehr das Minimale, was jetzt zu Krisenzeiten , einem positiv zugutekommt. Glauben Sie mir, nach dieser Krise ist nichts mehr wie es einmal war.",
+        //                                "comment_date": "2020-04-11 16:23:35"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\nGudden Metten,\r\n\r\nWouhier wësst dir dass dat eng Differenz vun 2% ass?\r\n\r\n\r\nBescht Gréiss,",
+        //                                "comment_date": "2020-04-11 14:48:05"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Här J. Scholer, ma bravo zu ärer Meenung !! Mat der do Zielsetzung sinn an 6 Wochen 50% vun den klengen an mettelgroussen Firmen Faillitte, trotz den Mossnahmen dei den Staat geholl huet. An dann wier dir den eischten den domm aus der Wäsch geif kucken, wann dir geift mierken dass een dei „ewig unzufriedner, dem Profit und Profiteurentum anhängender Zeitgenossen“ awer nach brauch fir Stéiren an Sozial Laschten ze bezuehlen. Esou onsolidaresch geingen iwwer 8.000 Menschen, dei Problemer hunn wei den Moment keng aner Groupe hei am Land. Ech soen villmols merci.",
+        //                                "comment_date": "2020-04-11 14:36:48"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "D'CSV steet am Abseits, si ass an dëser Zäit nët gefrot a, wéi hier Spëtzepolitiker beweise, kloer iwwerfuerdert. De Mischi, mat sengem Brettellspiano wier gutt beroden, sech méi zeréckzehalen. d'CSVlauer/innen solle sech e Beispill un eiser Gesondheetsministesch, der Madame Lenert, huelen a si bei hierer schwéierer Aarbecht op d'mannst moralesch ënnerstëtzen. De Mischi a seng Leit kënne jo elo dëser Deeg klibbere goen, wann hinne soss näischt besseres afällt!",
+        //                                "comment_date": "2020-04-11 14:19:57"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\n\"mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask\"\r\n\r\nEch froe mech, wéi esou Theorie kënnen zustaan kommen, vu dass et ethesch net vertrietbar ass, fir de Leit de Virus an d'Gesiicht ze blosen.\r\n\r\n2 Prozent, 20, 50, 100 Prozent, dat sinn alles nëmme Meenungen. Kee weess et wierklech ...",
+        //                                "comment_date": "2020-04-11 13:26:00"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Gesundheitsexperten und \"Unternehmer\" ?\r\n\r\nEs sind wohl eher Gesundheits- und Wirtschafts-Experten, die die Regierung \"beeinflussen\". \r\n\r\nDie Unternehmer gehören diesmal zur breiten Masse, die dem Virus absolut hilflos gegenüber steht und auf keinen Fall Ansteckungen in ihrer Umgebung haben will, egal ob im Unternehmen oder privat. \r\n\r\nDas Wort \"beeinflussen\" ist in diesem Fall wohl auch nicht anwendbar. Ich würde eher sagen, dass die Regierung mit den Experten der verschiedenen Fachgebiete abwägt, was gerade noch zumutbar ist und was getan werden kann.",
+        //                                "comment_date": "2020-04-11 13:01:32"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Op de Punkt. \r\nApropos Masken: de Mischi (CSV) däerf virun d'Kamera, den Emile (CSV), de Präsident vum Syvicol, och, de Gilles (CSV) vu  Mamer an de Marc (CSV) vun Hesper verdeele Masken ... eng pro Awunner! Dat ass fir emol an de Supermarché ze goën, duerno kënnen d'Awunner se direkt an d'Poubelle geheien. \r\nWat soll dat? Firwat de Leit mat esou enger Aktioun eppes vermëttelen, wat net stëmmt. D'Gefor, de Virus net ze kréien, ass mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask.",
+        //                                "comment_date": "2020-04-11 12:02:55"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Den Unternehmer , Gehör schenken , ein Unterfangen dem jämmerlichen Gejammer ewig unzufriedner, dem Profit und Profiteurentum  anhängender Zeitgenossen, scheint sekundär sein. Mensch vor Profit,  Geldgier .Alleine die Meinung der Wissenschaft ,Mediziner zählt ,Menschenleben zu schützen.",
+        //                                "comment_date": "2020-04-11 06:56:11"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Die Zurückhaltung der Schwarzen hat doch fast 14 Tage gehalten, ehe der Mann fürs Grobe wieder von der Kette gelassen wurde.",
+        //                                "comment_date": "2020-04-11 01:05:45"
+        //                            }
+        //                        ]
+        //                    },
+        //                    "shares": []
+        //                },
+        //                {
+        //                    "nid": "814119",
+        //                    "title": "Polternde Provinzfürsten: Populismus in Zeiten der Krise",
+        //                    "body": "<p class=\"text\">Erst die Augen schließen, dann weitersehen: So oder so ähnlich wirkt der politische Umgang mit Blick auf verlässliches Zahlenmaterial zur Corona-Krise. Während in Luxemburg am Mittwoch der Kick-off einer <a href=\"https://www.tageblatt.lu/headlines/die-studie-auf-der-luxemburgs-hoffnung-ruht/\">Dunkelziffer-Studie</a> war, gab es gestern in <a href=\"https://www.tageblatt.lu/headlines/studie-gibt-erstmals-aufschluss-ueber-infizierten-dunkelziffer/\">Österreich</a> erste Ergebnisse zu einem ähnlichen Unterfangen. Das ketzerische Ziel: endlich verlässliche Daten in Zeiten völliger Ungewissheit erhalten. Ob solche Forschungsergebnisse jedoch politisch ernst genommen werden, hängt stark vom Timing, der Methode, den vorläufigen Ergebnissen – und vor allem von den wirtschaftspolitischen Zielen einer Regierung ab.</p>\n<p class=\"text\">Vielleicht wundert sich der eine oder andere deswegen über wissenschaftliche Ansprüche in Krisenzeiten: „Ma hunn déi soss keng Péng?“ Solche Zweifel sind durchaus legitim und angesichts der Schwere der Krise nicht zu unterschätzen. Allerdings ist die Wissenschaft, wenn sie unabhängig und aussagekräftig arbeiten kann, der verlässlichste Partner einer kritischen Öffentlichkeit, um Politiker während einer Gesundheitskrise zu kontrollieren. Die Alternative: billige polemische Spielchen, wie sie sich derzeit in Luxemburg auf kommunaler Ebene entfalten. Der feuchte Traum eines jeden Krisen-Populisten: „<a href=\"https://www.tageblatt.lu/headlines/da-es-zu-wenige-gibt-kaempft-die-ganze-welt-um-masken/\">Masken für alle!</a>“ </p>\n<p class=\"text\">Gerade die CSV versucht, sich mit solchen plumpen Aktionen Gehör zu verschaffen. Wer sich aber auf dieses Niveau herablässt, scheitert gleich in zweierlei Hinsicht: Weder das aktuelle Krisenmanagement der Regierung noch bevorstehende Exit-Strategie-Maßnahmen werden dadurch kontrollierbarer. Es ist politische <a href=\"https://www.tageblatt.lu/headlines/gesundheitsministerin-beteuert-es-mangelt-nicht-an-material-und-produzenten/\">Augenwischerei</a> – und nicht weniger als unverantwortlich, in einer derart sensiblen Situation auch nur ansatzweise daran zu denken, politisches Kapital aus der Angst der Menschen zu schlagen. </p>\n<p class=\"text\">Die Ursachen für so viel <a href=\"https://www.tageblatt.lu/headlines/lebensgefaehrlicher-opportunismus-weshalb-kritiker-in-der-coronakrise-unerwuenscht-sind/\">Opportunismus</a> liegen auf der Hand: Es ist mühsam, sich mit <a href=\"https://www.tageblatt.lu/headlines/strenge-hygiene-koennte-weg-aus-dem-lockdown-ermoeglichen/\">Studien</a> herumzuplagen. Griffige Kritik lässt sich wahrlich mit anderen Themen leichter formulieren und an seine Wähler bringen. Am Resultat des Populismus in Zeiten der Corona-Krise ändert es nichts: Die Taktik ist durchsichtig, die Attitüde unsolidarisch. Dabei könnte eine Oppositionspartei, die das nötige Fingerspitzengefühl besitzt, durchaus eine <a href=\"https://www.tageblatt.lu/headlines/wenn-der-held-im-kittel-ein-risikopatient-ist/\">vorbildliche Kritikfunktion</a> in diesen schweren Zeiten entfalten.</p>\n<p class=\"text\">Denn die Diskussion über Studien und deren Nutzen ist kein Selbstzweck gelangweilter Schöngeister. Sie bietet vielmehr die Grundlage zur rationalen Beurteilung des zentralen Spannungsfelds dieser Krise: soziale und gesundheitliche mit wirtschaftspolitischen Zwängen in Einklang zu bringen. Die Grenze zwischen Leben und Jobs retten ist fließend. Sich gegenüber stehen dabei Gesundheitsexperten und Unternehmer. Sie sind die zentralen Player, sie beeinflussen Luxemburgs Regierung. Ihre Erwartungshaltung könnte kaum gegensätzlicher sein: den Lockdown so lange wie nötig aufrechterhalten vs. am liebsten noch heute zurück zum Business as usual. Ihnen sollte man sehr genau zuhören, sie muss man ernst nehmen – nicht aber polternde Provinzfürsten.</p>\n",
+        //                    "chapo": "",
+        //                    "format": false,
+        //                    "pubDate": "1586553300",
+        //                    "updateDate": "1586560858",
+        //                    "version": "2.0",
+        //                    "type": "package",
+        //                    "freeaccess": "true",
+        //                    "url": "/headlines/polternde-provinzfuersten-populismus-in-zeiten-der-krise/",
+        //                    "foretitle": null,
+        //                    "subtitle": null,
+        //                    "barette": null,
+        //                    "byline": null,
+        //                    "authors": [
+        //                        {
+        //                            "nid": "4",
+        //                            "name": "Dhiraj Sabharwal",
+        //                            "email": "dsabharwal@tageblatt.lu",
+        //                            "avatar_url": "http://preprod.tageblatt.lu/wp-content/uploads/2017/06/avatar_user_4_1497628873-64x64.png"
+        //                        }
+        //                    ],
+        //                    "mainDestinationName": "Headlines",
+        //                    "mainPost": "false",
+        //                    "object_relations": [
+        //                        {
+        //                            "object_type": "image",
+        //                            "relation_type": "scald_image",
+        //                            "uri": "1586560855_57586-jpg"
+        //                        },
+        //                        {
+        //                            "object_type": "links_list",
+        //                            "relation_type": "dpicontenttypes",
+        //                            "uri": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                        }
+        //                    ],
+        //                    "object_definitions": {
+        //                        "1586560855_57586-jpg": {
+        //                            "nid": "814126",
+        //                            "type": "image",
+        //                            "caption": "Her mit den Masken oder ich spiele ein Lied: Michel Wolter (CSV) kritisiert die Krisenpolitik der Regierung&nbsp;",
+        //                            "credit": null,
+        //                            "width": "2600",
+        //                            "height": "1883",
+        //                            "crops": {
+        //                                "small": "dpi_small",
+        //                                "medium": "dpi_medium",
+        //                                "large": "dpi_large"
+        //                            },
+        //                            "crop_definitions": {
+        //                                "dpi_small": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-256x144.jpg"
+        //                                },
+        //                                "dpi_medium": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-512x288.jpg"
+        //                                },
+        //                                "dpi_large": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-795x576.jpg"
+        //                                }
+        //                            }
+        //                        },
+        //                        "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/": {
+        //                            "nid": "",
+        //                            "type": "links_list",
+        //                            "title": "Mehr vom Tageblatt",
+        //                            "links": [
+        //                                {
+        //                                    "nid": "814175",
+        //                                    "type": "linktype",
+        //                                    "title": "Generaldirektor Reimer in der Kritik – Präsident Mischo dementiert Gerüchte über möglichen Führungswechsel ",
+        //                                    "url": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                                },
+        //                                {
+        //                                    "nid": "814170",
+        //                                    "type": "linktype",
+        //                                    "title": "Elf Neuinfektionen an Ostern, Zahl der Toten klettert auf 66",
+        //                                    "url": "https://www.tageblatt.lu/headlines/elf-neuinfektionen-an-ostern-zahl-der-toten-klettert-auf-66/"
+        //                                },
+        //                                {
+        //                                    "nid": "802613",
+        //                                    "type": "linktype",
+        //                                    "title": "Eklat am CHEM: Medizinischer Direktor Claude Birgen tritt zurück",
+        //                                    "url": "https://www.tageblatt.lu/headlines/eklat-am-chem-medizinischer-direktor-claude-birgen-tritt-zurueck/"
+        //                                },
+        //                                {
+        //                                    "nid": "814167",
+        //                                    "type": "linktype",
+        //                                    "title": "Emaischen goes online",
+        //                                    "url": "https://www.tageblatt.lu/headlines/emaischen-goes-online/"
+        //                                },
+        //                                {
+        //                                    "nid": "814165",
+        //                                    "type": "linktype",
+        //                                    "title": "Migranten auf Rettungsschiff sollen in Quarantäne auf See",
+        //                                    "url": "https://www.tageblatt.lu/headlines/migranten-auf-rettungsschiff-sollen-in-quarantaene-auf-see/"
+        //                                }
+        //                            ]
+        //                        }
+        //                    },
+        //                    "comments": {
+        //                        "count": 14,
+        //                        "list": [
+        //                            {
+        //                                "comment_author_name": "peter",
+        //                                "comment_content": "De Poltermischi a seng Leit, a blast from the past.\r\nHoffentlech kommen se ni méi erëm.",
+        //                                "comment_date": "2020-04-12 17:10:01"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "@Alain Thill \r\n\r\n\r\n\"Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“\r\nUnd die Maske von Zorro für Michel WOLTER!\"\r\n\r\nWeil er schwarz ist oder weil sie Mund und Nase nicht bedeckt?",
+        //                                "comment_date": "2020-04-12 17:03:56"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Die schwarze Bulldogge hat wieder mal eine Gelegenheit verpasst den Mund zu halten.",
+        //                                "comment_date": "2020-04-12 12:24:41"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“ \nUnd die Maske von Zorro für Michel WOLTER!",
+        //                                "comment_date": "2020-04-11 18:41:46"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "einfach mal etwas weiter ueber den tellerrand blicken und schon ist optimismus angesagt.neugierig geworden weil israel 95 todesfaelle durch corona hat bei 9 millionen einwohner habe ich mal die jerusalem post angeklickt.in einem artikel wird geschrieben dass es 100 prozent erfolgreiche plasmatherapie sogar fuer schwerste faelle gibt.ein anderer artikel handelt ueber die zuversicht der israelischen forscher in drei monaten eine schluckimpfung kommerzualisieren zu koennen weil das neue virus sich nur unwesentlich von anderen bekannten viren unterscheidet die menschen befallen.man reibt sich die augen.",
+        //                                "comment_date": "2020-04-11 18:04:30"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@Kutten: Ich verstehe absolut die Sorgen verschiedener Betriebe, aber gemäss der kapitalistischem Doktrin überlebt nur der Finanzstarke, sprich der in Zeiten des Überflusses wohl anhand der  Gewinne  Rücklagen „ en Aapel fir den Duscht“ gemacht hat. Naiv wäre der , der jetzt glaubt es würde alles so weiterlaufen, wie vor der Krise, wo die Spass- und Konsumgesellschaft sorgenlos das Geld verprasst, dem Schuldenmachen gefrönt, die Zukunft nicht abgesichert hat , sich auf eventuelle Krisen, Katastrophen vorzubereiten. Wir sollten die Krise nutzen , unsere Lebensweise zu überdenken, weniger Wirtschaftswachstum , den Menschen , die Natur in den Mittelpunkt stellen. Dieses Virus war eine Warnung , nutzen wir diesen Wink zum Umdenken. Übrigens bin ich der Meinung , jeder verantwortungsvoller, seriöser , arbeitsbewusster Handwerker, Händler.... wird auch Krisenzeiten , das Danach überleben. Wenn Sie nun meinen , betreffend meine Person , ich müsste auf vieles verzichten , ich habe schon vor dieser Krise dem Konsumrausch, dem Reisen , den Modetrends,....... entsagt, mir  liegt mehr das Minimale, was jetzt zu Krisenzeiten , einem positiv zugutekommt. Glauben Sie mir, nach dieser Krise ist nichts mehr wie es einmal war.",
+        //                                "comment_date": "2020-04-11 16:23:35"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\nGudden Metten,\r\n\r\nWouhier wësst dir dass dat eng Differenz vun 2% ass?\r\n\r\n\r\nBescht Gréiss,",
+        //                                "comment_date": "2020-04-11 14:48:05"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Här J. Scholer, ma bravo zu ärer Meenung !! Mat der do Zielsetzung sinn an 6 Wochen 50% vun den klengen an mettelgroussen Firmen Faillitte, trotz den Mossnahmen dei den Staat geholl huet. An dann wier dir den eischten den domm aus der Wäsch geif kucken, wann dir geift mierken dass een dei „ewig unzufriedner, dem Profit und Profiteurentum anhängender Zeitgenossen“ awer nach brauch fir Stéiren an Sozial Laschten ze bezuehlen. Esou onsolidaresch geingen iwwer 8.000 Menschen, dei Problemer hunn wei den Moment keng aner Groupe hei am Land. Ech soen villmols merci.",
+        //                                "comment_date": "2020-04-11 14:36:48"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "D'CSV steet am Abseits, si ass an dëser Zäit nët gefrot a, wéi hier Spëtzepolitiker beweise, kloer iwwerfuerdert. De Mischi, mat sengem Brettellspiano wier gutt beroden, sech méi zeréckzehalen. d'CSVlauer/innen solle sech e Beispill un eiser Gesondheetsministesch, der Madame Lenert, huelen a si bei hierer schwéierer Aarbecht op d'mannst moralesch ënnerstëtzen. De Mischi a seng Leit kënne jo elo dëser Deeg klibbere goen, wann hinne soss näischt besseres afällt!",
+        //                                "comment_date": "2020-04-11 14:19:57"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\n\"mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask\"\r\n\r\nEch froe mech, wéi esou Theorie kënnen zustaan kommen, vu dass et ethesch net vertrietbar ass, fir de Leit de Virus an d'Gesiicht ze blosen.\r\n\r\n2 Prozent, 20, 50, 100 Prozent, dat sinn alles nëmme Meenungen. Kee weess et wierklech ...",
+        //                                "comment_date": "2020-04-11 13:26:00"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Gesundheitsexperten und \"Unternehmer\" ?\r\n\r\nEs sind wohl eher Gesundheits- und Wirtschafts-Experten, die die Regierung \"beeinflussen\". \r\n\r\nDie Unternehmer gehören diesmal zur breiten Masse, die dem Virus absolut hilflos gegenüber steht und auf keinen Fall Ansteckungen in ihrer Umgebung haben will, egal ob im Unternehmen oder privat. \r\n\r\nDas Wort \"beeinflussen\" ist in diesem Fall wohl auch nicht anwendbar. Ich würde eher sagen, dass die Regierung mit den Experten der verschiedenen Fachgebiete abwägt, was gerade noch zumutbar ist und was getan werden kann.",
+        //                                "comment_date": "2020-04-11 13:01:32"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Op de Punkt. \r\nApropos Masken: de Mischi (CSV) däerf virun d'Kamera, den Emile (CSV), de Präsident vum Syvicol, och, de Gilles (CSV) vu  Mamer an de Marc (CSV) vun Hesper verdeele Masken ... eng pro Awunner! Dat ass fir emol an de Supermarché ze goën, duerno kënnen d'Awunner se direkt an d'Poubelle geheien. \r\nWat soll dat? Firwat de Leit mat esou enger Aktioun eppes vermëttelen, wat net stëmmt. D'Gefor, de Virus net ze kréien, ass mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask.",
+        //                                "comment_date": "2020-04-11 12:02:55"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Den Unternehmer , Gehör schenken , ein Unterfangen dem jämmerlichen Gejammer ewig unzufriedner, dem Profit und Profiteurentum  anhängender Zeitgenossen, scheint sekundär sein. Mensch vor Profit,  Geldgier .Alleine die Meinung der Wissenschaft ,Mediziner zählt ,Menschenleben zu schützen.",
+        //                                "comment_date": "2020-04-11 06:56:11"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Die Zurückhaltung der Schwarzen hat doch fast 14 Tage gehalten, ehe der Mann fürs Grobe wieder von der Kette gelassen wurde.",
+        //                                "comment_date": "2020-04-11 01:05:45"
+        //                            }
+        //                        ]
+        //                    },
+        //                    "shares": []
+        //                },
+        //                {
+        //                    "nid": "814119",
+        //                    "title": "Polternde Provinzfürsten: Populismus in Zeiten der Krise",
+        //                    "body": "<p class=\"text\">Erst die Augen schließen, dann weitersehen: So oder so ähnlich wirkt der politische Umgang mit Blick auf verlässliches Zahlenmaterial zur Corona-Krise. Während in Luxemburg am Mittwoch der Kick-off einer <a href=\"https://www.tageblatt.lu/headlines/die-studie-auf-der-luxemburgs-hoffnung-ruht/\">Dunkelziffer-Studie</a> war, gab es gestern in <a href=\"https://www.tageblatt.lu/headlines/studie-gibt-erstmals-aufschluss-ueber-infizierten-dunkelziffer/\">Österreich</a> erste Ergebnisse zu einem ähnlichen Unterfangen. Das ketzerische Ziel: endlich verlässliche Daten in Zeiten völliger Ungewissheit erhalten. Ob solche Forschungsergebnisse jedoch politisch ernst genommen werden, hängt stark vom Timing, der Methode, den vorläufigen Ergebnissen – und vor allem von den wirtschaftspolitischen Zielen einer Regierung ab.</p>\n<p class=\"text\">Vielleicht wundert sich der eine oder andere deswegen über wissenschaftliche Ansprüche in Krisenzeiten: „Ma hunn déi soss keng Péng?“ Solche Zweifel sind durchaus legitim und angesichts der Schwere der Krise nicht zu unterschätzen. Allerdings ist die Wissenschaft, wenn sie unabhängig und aussagekräftig arbeiten kann, der verlässlichste Partner einer kritischen Öffentlichkeit, um Politiker während einer Gesundheitskrise zu kontrollieren. Die Alternative: billige polemische Spielchen, wie sie sich derzeit in Luxemburg auf kommunaler Ebene entfalten. Der feuchte Traum eines jeden Krisen-Populisten: „<a href=\"https://www.tageblatt.lu/headlines/da-es-zu-wenige-gibt-kaempft-die-ganze-welt-um-masken/\">Masken für alle!</a>“ </p>\n<p class=\"text\">Gerade die CSV versucht, sich mit solchen plumpen Aktionen Gehör zu verschaffen. Wer sich aber auf dieses Niveau herablässt, scheitert gleich in zweierlei Hinsicht: Weder das aktuelle Krisenmanagement der Regierung noch bevorstehende Exit-Strategie-Maßnahmen werden dadurch kontrollierbarer. Es ist politische <a href=\"https://www.tageblatt.lu/headlines/gesundheitsministerin-beteuert-es-mangelt-nicht-an-material-und-produzenten/\">Augenwischerei</a> – und nicht weniger als unverantwortlich, in einer derart sensiblen Situation auch nur ansatzweise daran zu denken, politisches Kapital aus der Angst der Menschen zu schlagen. </p>\n<p class=\"text\">Die Ursachen für so viel <a href=\"https://www.tageblatt.lu/headlines/lebensgefaehrlicher-opportunismus-weshalb-kritiker-in-der-coronakrise-unerwuenscht-sind/\">Opportunismus</a> liegen auf der Hand: Es ist mühsam, sich mit <a href=\"https://www.tageblatt.lu/headlines/strenge-hygiene-koennte-weg-aus-dem-lockdown-ermoeglichen/\">Studien</a> herumzuplagen. Griffige Kritik lässt sich wahrlich mit anderen Themen leichter formulieren und an seine Wähler bringen. Am Resultat des Populismus in Zeiten der Corona-Krise ändert es nichts: Die Taktik ist durchsichtig, die Attitüde unsolidarisch. Dabei könnte eine Oppositionspartei, die das nötige Fingerspitzengefühl besitzt, durchaus eine <a href=\"https://www.tageblatt.lu/headlines/wenn-der-held-im-kittel-ein-risikopatient-ist/\">vorbildliche Kritikfunktion</a> in diesen schweren Zeiten entfalten.</p>\n<p class=\"text\">Denn die Diskussion über Studien und deren Nutzen ist kein Selbstzweck gelangweilter Schöngeister. Sie bietet vielmehr die Grundlage zur rationalen Beurteilung des zentralen Spannungsfelds dieser Krise: soziale und gesundheitliche mit wirtschaftspolitischen Zwängen in Einklang zu bringen. Die Grenze zwischen Leben und Jobs retten ist fließend. Sich gegenüber stehen dabei Gesundheitsexperten und Unternehmer. Sie sind die zentralen Player, sie beeinflussen Luxemburgs Regierung. Ihre Erwartungshaltung könnte kaum gegensätzlicher sein: den Lockdown so lange wie nötig aufrechterhalten vs. am liebsten noch heute zurück zum Business as usual. Ihnen sollte man sehr genau zuhören, sie muss man ernst nehmen – nicht aber polternde Provinzfürsten.</p>\n",
+        //                    "chapo": "",
+        //                    "format": false,
+        //                    "pubDate": "1586553300",
+        //                    "updateDate": "1586560858",
+        //                    "version": "2.0",
+        //                    "type": "package",
+        //                    "freeaccess": "true",
+        //                    "url": "/headlines/polternde-provinzfuersten-populismus-in-zeiten-der-krise/",
+        //                    "foretitle": null,
+        //                    "subtitle": null,
+        //                    "barette": null,
+        //                    "byline": null,
+        //                    "authors": [
+        //                        {
+        //                            "nid": "4",
+        //                            "name": "Dhiraj Sabharwal",
+        //                            "email": "dsabharwal@tageblatt.lu",
+        //                            "avatar_url": "http://preprod.tageblatt.lu/wp-content/uploads/2017/06/avatar_user_4_1497628873-64x64.png"
+        //                        }
+        //                    ],
+        //                    "mainDestinationName": "Headlines",
+        //                    "mainPost": "false",
+        //                    "object_relations": [
+        //                        {
+        //                            "object_type": "image",
+        //                            "relation_type": "scald_image",
+        //                            "uri": "1586560855_57586-jpg"
+        //                        },
+        //                        {
+        //                            "object_type": "links_list",
+        //                            "relation_type": "dpicontenttypes",
+        //                            "uri": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                        }
+        //                    ],
+        //                    "object_definitions": {
+        //                        "1586560855_57586-jpg": {
+        //                            "nid": "814126",
+        //                            "type": "image",
+        //                            "caption": "Her mit den Masken oder ich spiele ein Lied: Michel Wolter (CSV) kritisiert die Krisenpolitik der Regierung&nbsp;",
+        //                            "credit": null,
+        //                            "width": "2600",
+        //                            "height": "1883",
+        //                            "crops": {
+        //                                "small": "dpi_small",
+        //                                "medium": "dpi_medium",
+        //                                "large": "dpi_large"
+        //                            },
+        //                            "crop_definitions": {
+        //                                "dpi_small": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-256x144.jpg"
+        //                                },
+        //                                "dpi_medium": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-512x288.jpg"
+        //                                },
+        //                                "dpi_large": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-795x576.jpg"
+        //                                }
+        //                            }
+        //                        },
+        //                        "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/": {
+        //                            "nid": "",
+        //                            "type": "links_list",
+        //                            "title": "Mehr vom Tageblatt",
+        //                            "links": [
+        //                                {
+        //                                    "nid": "814175",
+        //                                    "type": "linktype",
+        //                                    "title": "Generaldirektor Reimer in der Kritik – Präsident Mischo dementiert Gerüchte über möglichen Führungswechsel ",
+        //                                    "url": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                                },
+        //                                {
+        //                                    "nid": "814170",
+        //                                    "type": "linktype",
+        //                                    "title": "Elf Neuinfektionen an Ostern, Zahl der Toten klettert auf 66",
+        //                                    "url": "https://www.tageblatt.lu/headlines/elf-neuinfektionen-an-ostern-zahl-der-toten-klettert-auf-66/"
+        //                                },
+        //                                {
+        //                                    "nid": "802613",
+        //                                    "type": "linktype",
+        //                                    "title": "Eklat am CHEM: Medizinischer Direktor Claude Birgen tritt zurück",
+        //                                    "url": "https://www.tageblatt.lu/headlines/eklat-am-chem-medizinischer-direktor-claude-birgen-tritt-zurueck/"
+        //                                },
+        //                                {
+        //                                    "nid": "814167",
+        //                                    "type": "linktype",
+        //                                    "title": "Emaischen goes online",
+        //                                    "url": "https://www.tageblatt.lu/headlines/emaischen-goes-online/"
+        //                                },
+        //                                {
+        //                                    "nid": "814165",
+        //                                    "type": "linktype",
+        //                                    "title": "Migranten auf Rettungsschiff sollen in Quarantäne auf See",
+        //                                    "url": "https://www.tageblatt.lu/headlines/migranten-auf-rettungsschiff-sollen-in-quarantaene-auf-see/"
+        //                                }
+        //                            ]
+        //                        }
+        //                    },
+        //                    "comments": {
+        //                        "count": 14,
+        //                        "list": [
+        //                            {
+        //                                "comment_author_name": "peter",
+        //                                "comment_content": "De Poltermischi a seng Leit, a blast from the past.\r\nHoffentlech kommen se ni méi erëm.",
+        //                                "comment_date": "2020-04-12 17:10:01"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "@Alain Thill \r\n\r\n\r\n\"Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“\r\nUnd die Maske von Zorro für Michel WOLTER!\"\r\n\r\nWeil er schwarz ist oder weil sie Mund und Nase nicht bedeckt?",
+        //                                "comment_date": "2020-04-12 17:03:56"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Die schwarze Bulldogge hat wieder mal eine Gelegenheit verpasst den Mund zu halten.",
+        //                                "comment_date": "2020-04-12 12:24:41"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“ \nUnd die Maske von Zorro für Michel WOLTER!",
+        //                                "comment_date": "2020-04-11 18:41:46"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "einfach mal etwas weiter ueber den tellerrand blicken und schon ist optimismus angesagt.neugierig geworden weil israel 95 todesfaelle durch corona hat bei 9 millionen einwohner habe ich mal die jerusalem post angeklickt.in einem artikel wird geschrieben dass es 100 prozent erfolgreiche plasmatherapie sogar fuer schwerste faelle gibt.ein anderer artikel handelt ueber die zuversicht der israelischen forscher in drei monaten eine schluckimpfung kommerzualisieren zu koennen weil das neue virus sich nur unwesentlich von anderen bekannten viren unterscheidet die menschen befallen.man reibt sich die augen.",
+        //                                "comment_date": "2020-04-11 18:04:30"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@Kutten: Ich verstehe absolut die Sorgen verschiedener Betriebe, aber gemäss der kapitalistischem Doktrin überlebt nur der Finanzstarke, sprich der in Zeiten des Überflusses wohl anhand der  Gewinne  Rücklagen „ en Aapel fir den Duscht“ gemacht hat. Naiv wäre der , der jetzt glaubt es würde alles so weiterlaufen, wie vor der Krise, wo die Spass- und Konsumgesellschaft sorgenlos das Geld verprasst, dem Schuldenmachen gefrönt, die Zukunft nicht abgesichert hat , sich auf eventuelle Krisen, Katastrophen vorzubereiten. Wir sollten die Krise nutzen , unsere Lebensweise zu überdenken, weniger Wirtschaftswachstum , den Menschen , die Natur in den Mittelpunkt stellen. Dieses Virus war eine Warnung , nutzen wir diesen Wink zum Umdenken. Übrigens bin ich der Meinung , jeder verantwortungsvoller, seriöser , arbeitsbewusster Handwerker, Händler.... wird auch Krisenzeiten , das Danach überleben. Wenn Sie nun meinen , betreffend meine Person , ich müsste auf vieles verzichten , ich habe schon vor dieser Krise dem Konsumrausch, dem Reisen , den Modetrends,....... entsagt, mir  liegt mehr das Minimale, was jetzt zu Krisenzeiten , einem positiv zugutekommt. Glauben Sie mir, nach dieser Krise ist nichts mehr wie es einmal war.",
+        //                                "comment_date": "2020-04-11 16:23:35"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\nGudden Metten,\r\n\r\nWouhier wësst dir dass dat eng Differenz vun 2% ass?\r\n\r\n\r\nBescht Gréiss,",
+        //                                "comment_date": "2020-04-11 14:48:05"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Här J. Scholer, ma bravo zu ärer Meenung !! Mat der do Zielsetzung sinn an 6 Wochen 50% vun den klengen an mettelgroussen Firmen Faillitte, trotz den Mossnahmen dei den Staat geholl huet. An dann wier dir den eischten den domm aus der Wäsch geif kucken, wann dir geift mierken dass een dei „ewig unzufriedner, dem Profit und Profiteurentum anhängender Zeitgenossen“ awer nach brauch fir Stéiren an Sozial Laschten ze bezuehlen. Esou onsolidaresch geingen iwwer 8.000 Menschen, dei Problemer hunn wei den Moment keng aner Groupe hei am Land. Ech soen villmols merci.",
+        //                                "comment_date": "2020-04-11 14:36:48"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "D'CSV steet am Abseits, si ass an dëser Zäit nët gefrot a, wéi hier Spëtzepolitiker beweise, kloer iwwerfuerdert. De Mischi, mat sengem Brettellspiano wier gutt beroden, sech méi zeréckzehalen. d'CSVlauer/innen solle sech e Beispill un eiser Gesondheetsministesch, der Madame Lenert, huelen a si bei hierer schwéierer Aarbecht op d'mannst moralesch ënnerstëtzen. De Mischi a seng Leit kënne jo elo dëser Deeg klibbere goen, wann hinne soss näischt besseres afällt!",
+        //                                "comment_date": "2020-04-11 14:19:57"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "@ Infalt Roger\r\n\r\n\"mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask\"\r\n\r\nEch froe mech, wéi esou Theorie kënnen zustaan kommen, vu dass et ethesch net vertrietbar ass, fir de Leit de Virus an d'Gesiicht ze blosen.\r\n\r\n2 Prozent, 20, 50, 100 Prozent, dat sinn alles nëmme Meenungen. Kee weess et wierklech ...",
+        //                                "comment_date": "2020-04-11 13:26:00"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Gesundheitsexperten und \"Unternehmer\" ?\r\n\r\nEs sind wohl eher Gesundheits- und Wirtschafts-Experten, die die Regierung \"beeinflussen\". \r\n\r\nDie Unternehmer gehören diesmal zur breiten Masse, die dem Virus absolut hilflos gegenüber steht und auf keinen Fall Ansteckungen in ihrer Umgebung haben will, egal ob im Unternehmen oder privat. \r\n\r\nDas Wort \"beeinflussen\" ist in diesem Fall wohl auch nicht anwendbar. Ich würde eher sagen, dass die Regierung mit den Experten der verschiedenen Fachgebiete abwägt, was gerade noch zumutbar ist und was getan werden kann.",
+        //                                "comment_date": "2020-04-11 13:01:32"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Op de Punkt. \r\nApropos Masken: de Mischi (CSV) däerf virun d'Kamera, den Emile (CSV), de Präsident vum Syvicol, och, de Gilles (CSV) vu  Mamer an de Marc (CSV) vun Hesper verdeele Masken ... eng pro Awunner! Dat ass fir emol an de Supermarché ze goën, duerno kënnen d'Awunner se direkt an d'Poubelle geheien. \r\nWat soll dat? Firwat de Leit mat esou enger Aktioun eppes vermëttelen, wat net stëmmt. D'Gefor, de Virus net ze kréien, ass mat esou Masken ëm 2 (!) Prozent méi kleng ewéi ouni Mask.",
+        //                                "comment_date": "2020-04-11 12:02:55"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Den Unternehmer , Gehör schenken , ein Unterfangen dem jämmerlichen Gejammer ewig unzufriedner, dem Profit und Profiteurentum  anhängender Zeitgenossen, scheint sekundär sein. Mensch vor Profit,  Geldgier .Alleine die Meinung der Wissenschaft ,Mediziner zählt ,Menschenleben zu schützen.",
+        //                                "comment_date": "2020-04-11 06:56:11"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "",
+        //                                "comment_content": "Die Zurückhaltung der Schwarzen hat doch fast 14 Tage gehalten, ehe der Mann fürs Grobe wieder von der Kette gelassen wurde.",
+        //                                "comment_date": "2020-04-11 01:05:45"
+        //                            }
+        //                        ]
+        //                    },
+        //                    "shares": []
+        //                },
+        //                {
+        //                    "nid": "814119",
+        //                    "title": "Polternde Provinzfürsten: Populismus in Zeiten der Krise",
+        //                    "body": "<p class=\"text\">Erst die Augen schließen, dann weitersehen: So oder so ähnlich wirkt der politische Umgang mit Blick auf verlässliches Zahlenmaterial zur Corona-Krise. Während in Luxemburg am Mittwoch der Kick-off einer <a href=\"https://www.tageblatt.lu/headlines/die-studie-auf-der-luxemburgs-hoffnung-ruht/\">Dunkelziffer-Studie</a> war, gab es gestern in <a href=\"https://www.tageblatt.lu/headlines/studie-gibt-erstmals-aufschluss-ueber-infizierten-dunkelziffer/\">Österreich</a> erste Ergebnisse zu einem ähnlichen Unterfangen. Das ketzerische Ziel: endlich verlässliche Daten in Zeiten völliger Ungewissheit erhalten. Ob solche Forschungsergebnisse jedoch politisch ernst genommen werden, hängt stark vom Timing, der Methode, den vorläufigen Ergebnissen – und vor allem von den wirtschaftspolitischen Zielen einer Regierung ab.</p>\n<p class=\"text\">Vielleicht wundert sich der eine oder andere deswegen über wissenschaftliche Ansprüche in Krisenzeiten: „Ma hunn déi soss keng Péng?“ Solche Zweifel sind durchaus legitim und angesichts der Schwere der Krise nicht zu unterschätzen. Allerdings ist die Wissenschaft, wenn sie unabhängig und aussagekräftig arbeiten kann, der verlässlichste Partner einer kritischen Öffentlichkeit, um Politiker während einer Gesundheitskrise zu kontrollieren. Die Alternative: billige polemische Spielchen, wie sie sich derzeit in Luxemburg auf kommunaler Ebene entfalten. Der feuchte Traum eines jeden Krisen-Populisten: „<a href=\"https://www.tageblatt.lu/headlines/da-es-zu-wenige-gibt-kaempft-die-ganze-welt-um-masken/\">Masken für alle!</a>“ </p>\n<p class=\"text\">Gerade die CSV versucht, sich mit solchen plumpen Aktionen Gehör zu verschaffen. Wer sich aber auf dieses Niveau herablässt, scheitert gleich in zweierlei Hinsicht: Weder das aktuelle Krisenmanagement der Regierung noch bevorstehende Exit-Strategie-Maßnahmen werden dadurch kontrollierbarer. Es ist politische <a href=\"https://www.tageblatt.lu/headlines/gesundheitsministerin-beteuert-es-mangelt-nicht-an-material-und-produzenten/\">Augenwischerei</a> – und nicht weniger als unverantwortlich, in einer derart sensiblen Situation auch nur ansatzweise daran zu denken, politisches Kapital aus der Angst der Menschen zu schlagen. </p>\n<p class=\"text\">Die Ursachen für so viel <a href=\"https://www.tageblatt.lu/headlines/lebensgefaehrlicher-opportunismus-weshalb-kritiker-in-der-coronakrise-unerwuenscht-sind/\">Opportunismus</a> liegen auf der Hand: Es ist mühsam, sich mit <a href=\"https://www.tageblatt.lu/headlines/strenge-hygiene-koennte-weg-aus-dem-lockdown-ermoeglichen/\">Studien</a> herumzuplagen. Griffige Kritik lässt sich wahrlich mit anderen Themen leichter formulieren und an seine Wähler bringen. Am Resultat des Populismus in Zeiten der Corona-Krise ändert es nichts: Die Taktik ist durchsichtig, die Attitüde unsolidarisch. Dabei könnte eine Oppositionspartei, die das nötige Fingerspitzengefühl besitzt, durchaus eine <a href=\"https://www.tageblatt.lu/headlines/wenn-der-held-im-kittel-ein-risikopatient-ist/\">vorbildliche Kritikfunktion</a> in diesen schweren Zeiten entfalten.</p>\n<p class=\"text\">Denn die Diskussion über Studien und deren Nutzen ist kein Selbstzweck gelangweilter Schöngeister. Sie bietet vielmehr die Grundlage zur rationalen Beurteilung des zentralen Spannungsfelds dieser Krise: soziale und gesundheitliche mit wirtschaftspolitischen Zwängen in Einklang zu bringen. Die Grenze zwischen Leben und Jobs retten ist fließend. Sich gegenüber stehen dabei Gesundheitsexperten und Unternehmer. Sie sind die zentralen Player, sie beeinflussen Luxemburgs Regierung. Ihre Erwartungshaltung könnte kaum gegensätzlicher sein: den Lockdown so lange wie nötig aufrechterhalten vs. am liebsten noch heute zurück zum Business as usual. Ihnen sollte man sehr genau zuhören, sie muss man ernst nehmen – nicht aber polternde Provinzfürsten.</p>\n",
+        //                    "chapo": "",
+        //                    "format": false,
+        //                    "pubDate": "1586553300",
+        //                    "updateDate": "1586560858",
+        //                    "version": "2.0",
+        //                    "type": "package",
+        //                    "freeaccess": "true",
+        //                    "url": "/headlines/polternde-provinzfuersten-populismus-in-zeiten-der-krise/",
+        //                    "foretitle": null,
+        //                    "subtitle": null,
+        //                    "barette": null,
+        //                    "byline": null,
+        //                    "authors": [
+        //                        {
+        //                            "nid": "4",
+        //                            "name": "Dhiraj Sabharwal",
+        //                            "email": "dsabharwal@tageblatt.lu",
+        //                            "avatar_url": "http://preprod.tageblatt.lu/wp-content/uploads/2017/06/avatar_user_4_1497628873-64x64.png"
+        //                        }
+        //                    ],
+        //                    "mainDestinationName": "Headlines",
+        //                    "mainPost": "false",
+        //                    "object_relations": [
+        //                        {
+        //                            "object_type": "image",
+        //                            "relation_type": "scald_image",
+        //                            "uri": "1586560855_57586-jpg"
+        //                        },
+        //                        {
+        //                            "object_type": "links_list",
+        //                            "relation_type": "dpicontenttypes",
+        //                            "uri": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                        }
+        //                    ],
+        //                    "object_definitions": {
+        //                        "1586560855_57586-jpg": {
+        //                            "nid": "814126",
+        //                            "type": "image",
+        //                            "caption": "Her mit den Masken oder ich spiele ein Lied: Michel Wolter (CSV) kritisiert die Krisenpolitik der Regierung&nbsp;",
+        //                            "credit": null,
+        //                            "width": "2600",
+        //                            "height": "1883",
+        //                            "crops": {
+        //                                "small": "dpi_small",
+        //                                "medium": "dpi_medium",
+        //                                "large": "dpi_large"
+        //                            },
+        //                            "crop_definitions": {
+        //                                "dpi_small": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-256x144.jpg"
+        //                                },
+        //                                "dpi_medium": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-512x288.jpg"
+        //                                },
+        //                                "dpi_large": {
+        //                                    "url": "https://www.tageblatt.lu/wp-content/uploads/2020/04/57586_cx__cy__cw__ch_-795x576.jpg"
+        //                                }
+        //                            }
+        //                        },
+        //                        "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/": {
+        //                            "nid": "",
+        //                            "type": "links_list",
+        //                            "title": "Mehr vom Tageblatt",
+        //                            "links": [
+        //                                {
+        //                                    "nid": "814175",
+        //                                    "type": "linktype",
+        //                                    "title": "Generaldirektor Reimer in der Kritik – Präsident Mischo dementiert Gerüchte über möglichen Führungswechsel ",
+        //                                    "url": "https://www.tageblatt.lu/headlines/generaldirektor-reimer-in-der-kritik-praesident-mischo-dementiert-geruechte-ueber-moeglichen-fuehrungswechsel/"
+        //                                },
+        //                                {
+        //                                    "nid": "814170",
+        //                                    "type": "linktype",
+        //                                    "title": "Elf Neuinfektionen an Ostern, Zahl der Toten klettert auf 66",
+        //                                    "url": "https://www.tageblatt.lu/headlines/elf-neuinfektionen-an-ostern-zahl-der-toten-klettert-auf-66/"
+        //                                },
+        //                                {
+        //                                    "nid": "802613",
+        //                                    "type": "linktype",
+        //                                    "title": "Eklat am CHEM: Medizinischer Direktor Claude Birgen tritt zurück",
+        //                                    "url": "https://www.tageblatt.lu/headlines/eklat-am-chem-medizinischer-direktor-claude-birgen-tritt-zurueck/"
+        //                                },
+        //                                {
+        //                                    "nid": "814167",
+        //                                    "type": "linktype",
+        //                                    "title": "Emaischen goes online",
+        //                                    "url": "https://www.tageblatt.lu/headlines/emaischen-goes-online/"
+        //                                },
+        //                                {
+        //                                    "nid": "814165",
+        //                                    "type": "linktype",
+        //                                    "title": "Migranten auf Rettungsschiff sollen in Quarantäne auf See",
+        //                                    "url": "https://www.tageblatt.lu/headlines/migranten-auf-rettungsschiff-sollen-in-quarantaene-auf-see/"
+        //                                }
+        //                            ]
+        //                        }
+        //                    },
+        //                    "comments": {
+        //                        "count": 14,
+        //                        "list": [
+        //                            {
+        //                                "comment_author_name": "peter",
+        //                                "comment_content": "De Poltermischi a seng Leit, a blast from the past.\r\nHoffentlech kommen se ni méi erëm.",
+        //                                "comment_date": "2020-04-12 17:10:01"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "@Alain Thill \r\n\r\n\r\n\"Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“\r\nUnd die Maske von Zorro für Michel WOLTER!\"\r\n\r\nWeil er schwarz ist oder weil sie Mund und Nase nicht bedeckt?",
+        //                                "comment_date": "2020-04-12 17:03:56"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
+        //                                "comment_content": "Die schwarze Bulldogge hat wieder mal eine Gelegenheit verpasst den Mund zu halten.",
+        //                                "comment_date": "2020-04-12 12:24:41"
+        //                            },
+        //                            {
+        //                                "comment_author_name": "jean",
         //                                "comment_content": "Der feuchte Traum eines jeden Krisen-Populisten: „Masken für alle!“ \nUnd die Maske von Zorro für Michel WOLTER!",
         //                                "comment_date": "2020-04-11 18:41:46"
         //                            },
@@ -302,7 +834,40 @@ export async function getArticles(url){
         //                }
         //                ]
         //        }
-        return result;
+// var v= JSON.parse(result.packages);
+   const lapsList = result.packages.map((item) => {
+   let t1=(typeof item['object_relations'][0]['uri']!="undefined")?item['object_relations'][0]['uri']:null;
+   if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+     {  var imageurlMedium = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_medium']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_medium'].url:null;}
+   if(typeof item['object_definitions'][t1]['crop_definitions']!="undefined")
+   {  var imageurlSmall = (typeof item['object_definitions'][t1]['crop_definitions']['dpi_small']!="undefined")?item['object_definitions'][t1]['crop_definitions']['dpi_small'].url:null;}
+   let urlshare=(typeof item['object_relations'][1]!="undefined")?item['object_relations'][1].uri:null;
+ //
+ // let t2=(typeof item['object_relations'][1]['uri']!="undefined")?item['object_relations'][1]['uri']:null;
+ // if(typeof item['object_definitions'][t2]['links']!="undefined")
+ //   {  var links = (typeof item['object_definitions'][t2]['links']!="undefined")?item['object_definitions'][t2].links:null;}
+
+const dataArray =
+{ "nid":item.nid,
+  "title": item.title,
+"body":item.body.slice(44, 300),
+"pubDate":item.pubDate,
+"mainDestinationName":item.mainDestinationName,
+"comments":item.comments.count,
+"imageurlMedium":imageurlMedium,
+"imageurlSmall":imageurlSmall,
+"urlshare":urlshare
+// "links":links
+}
+;
+return (
+ dataArray
+)
+});
+ // console.log(lapsList);
+
+
+        return lapsList;
     } catch (error) {
         throw error
     }
@@ -311,7 +876,7 @@ export async function getArticles(url){
 export async function getArticleLinks(id){
 
     try {
-      let url='https://nux3.tageblatt.lu/dpijson/v1/article/'+id;
+      let url='http://awstgb2.tageblatt.lu/dpijson/v1/article/'+id;
         let articles = await fetch(url,{
             headers:{  }
         });
