@@ -7,6 +7,7 @@ import {Container, Header, Left, Body, Right, Button, Title,Text,Content, List, 
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { IMAGE } from '../constants/image';
+import { CONSTANTS } from '../constants/constants';
 // import { Fonts } from './src/constants/fonts';
 import { getArticles,getArticleLinks , getMenusideGategory} from '../services/news';
  import HTML from 'react-native-render-html';
@@ -69,7 +70,7 @@ class Feed extends PureComponent {
            data: null,
            dataimage: null,
            isError: false,
-            url:"https://awstgb2.tageblatt.lu/dpijson/v1/section/0/Homepage",
+            url:CONSTANTS.URL,
             token:"",
             obj:{
               name:'tarif',
