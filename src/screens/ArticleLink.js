@@ -11,13 +11,27 @@ import  {IMAGE}  from '../../src/constants/image';
 export default class ArticleLink extends React.Component {
   constructor(props) {
        super(props);
+       this.scrollView = null;
          this.state = {
       isLoading: true,
       data: null,
       isError: false,
   }
 }
-
+componentDidMount() {
+// this.scrollView.scrollTo(0,0);
+ // const _scrollView = this.scrollView;
+//
+//  if (_scrollView) {
+//    _scrollView.scrollTo({x: 10});
+//  }
+// setTimeout(() => {
+//     _scrollView.scrollTo(0, 0);
+// }, 1);
+}
+// scrollListReftop=() => {
+// this.scrollListReftop.scrollTo({x: 0, y: 0, animated: true})
+// }
   render() {
 const { params } = this.props.navigation.state;
 
@@ -35,17 +49,27 @@ if(params!=null) {
 // const imageurl = this.state.data ? this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_medium'].url : null;
 const links=this.state.data? this.state.data['object_definitions'][this.state.data['object_relations'][1]['uri']]['links']: null;
 const title= this.state.data? this.state.data.title:null;
+const foretitle= this.state.data ? this.state.data.foretitle:null;
 // const  mainDestinationName= this.state.data? this.state.data.mainDestinationName:null;
 const author= this.state.data?this.state.data.authors[0].name:null;
 var pubDate=this.state.data?(new Date(parseInt(this.state.data.pubDate+'000')).toISOString()):null;
 let date1 = new Date(pubDate);
  const time = moment(date1).format('DD[/]MM[/]YYYY  HH:mm');
 const imageurl= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['crop_definitions']['dpi_small'].url: null;
-const captionimage= this.state.data?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['caption']: null;
 const body=this.state.data? this.state.data.body: null;
  const commentscount= this.state.data? parseInt(this.state.data.comments.count): null;
  const page = commentscount > 0 ? "Comments" : "AddComments";
-
+ const caption = this.state.data ?this.state.data['object_definitions'][this.state.data['object_relations'][0]['uri']]['caption']:null;
+ const MEHR =links?(<Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>):null;
+ const bottomline =links?(<View
+style={{
+marginTop:5,
+borderBottomColor: "black",
+borderBottomWidth: 4,
+alignSelf:'stretch',
+width:Dimensions.get('window').width-30
+}}
+/>):null;
 // console.log(links);
 // console.log(pubDate);
 
@@ -56,7 +80,10 @@ const body=this.state.data? this.state.data.body: null;
  return (
 
       <View style={{ flex: 1 }}>
-          <ScrollView>
+      <ScrollView ref={(ref) => { this.scrollView = ref; }}
+  // ref='_scrollView'
+  // onContentSizeChange={() => { this.refs._scrollView.scrollTo({x: 0, y: 0, animated: true}); }}
+ >
           <Header style={{ backgroundColor: 'black' }}>
             <Left>
               <Button transparent>
@@ -81,7 +108,7 @@ const body=this.state.data? this.state.data.body: null;
          }}
          source={{uri:imageurl}}
          />
-         <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{captionimage}</Text>
+         <Text numberOfLines={2} style={{backgroundColor: '#3d3d3d',color:"#f2f2f2", padding: 10, left:0,right: 0,position: 'absolute', fontSize: 12,bottom:0,alignItems: 'center', justifyContent: 'center'}}>{caption}</Text>
      </View>
       <View style={{   flex:8,
     width:Dimensions.get('window').width-30}}>
@@ -100,19 +127,20 @@ blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensio
  classesStyles={{ 'author': { fontSize:Dimensions.get('window').width*0.05 },'function':{fontSize:Dimensions.get('window').width*0.05}  }}
       />
       </View>
-            <Text style={{flexDirection: 'row' ,fontSize: 26 }} >MEHR VOM TAGEBLATT</Text>
+      {MEHR}
+    {bottomline}
           <List  style={{marginBottom:50}}
               dataArray={links}
           renderItem={({item})=>{
               return (
                         <ListItem style={{marginLeft: 0}} noBorder>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('ArticleLink',item)} style={{flexDirection:'row'}} activeOpacity={0.5}>
-                        <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{item.title}</Text>
+                        <TouchableOpacity onPress={() => {this.scrollView.scrollTo(0);this.props.navigation.navigate('ArticleLink',item)}} style={{flexDirection:'row'}} activeOpacity={0.5}>
+                        <Text  numberOfLines={3} style={{fontSize: 16 }} numberOfLines={2}>{`\u25A0 ${item.title}`}</Text>
                             </TouchableOpacity>
                       </ListItem>
                     )
               }} />
-                <View style = {styles.button_style}>
+              <View style = {{alignSelf: 'center',marginBottom:30}}  >
               <Button danger >
         <Text>KOMMENTARE</Text>
             </Button>
@@ -122,7 +150,7 @@ blockquote: {fontSize:Dimensions.get('window').width*0.05},a: {fontSize:Dimensio
               <View  navigation={this.props.navigation}  style={{ marginTop:5,paddingHorizontal:20,backgroundColor: '#c4c6ca',justifyContent: 'space-around', alignItems: 'flex-start',flexDirection:'row',height:50 }}>
                 <View  style={{  flexDirection: 'row',alignItems: 'center'}}>
                     <Button transparent>
-                       <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,this.state.data)}  size={20} color='#939497'/>
+                       <Icon name='comments' onPress={() =>this.props.navigation.navigate( page,this.state.data['comments'])}  size={20} color='#939497'/>
                     </Button>
                      <Text style={{color:'#939497',fontSize: 14,marginLeft: 3 }}>{commentscount}</Text>
                 </View>
